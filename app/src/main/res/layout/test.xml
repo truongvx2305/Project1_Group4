@@ -2,23 +2,23 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/headerNavigationLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue">
+    android:background="@color/blue"
+    android:id="@+id/headerNavigationLayout">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageHeaderNavi"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:scaleType="centerCrop"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:scaleType="centerCrop"
         android:src="@drawable/user1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/CircularShape"
-        tools:ignore="ContentDescription,RtlHardcoded" />
+        tools:ignore="ContentDescription,RtlHardcoded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/showUsername"

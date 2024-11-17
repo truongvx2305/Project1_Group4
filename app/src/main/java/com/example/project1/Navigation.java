@@ -101,7 +101,7 @@ public class Navigation extends AppCompatActivity {
     private void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
         TextView showUsername = view.findViewById(R.id.showUsername);
-        TextView showEmail = view.findViewById(R.id.showEmail);
+        // TextView showEmail = view.findViewById(R.id.showEmail);
         ImageView imageHeaderNavi = view.findViewById(R.id.imageHeaderNavi);
 
         // Lấy ảnh từ cơ sở dữ liệu
@@ -113,13 +113,13 @@ public class Navigation extends AppCompatActivity {
 
         // Hiển thị username
         if (username != null) {
-            showUsername.setText(username);
+            showUsername.setText("Chào " + username);
 
-            // Lấy email từ cơ sở dữ liệu
-            String email = userDao.getEmail(username);
-            if (email != null) {
-                showEmail.setText(email);
-            }
+//            Lấy email từ cơ sở dữ liệu
+//            String email = userDao.getEmail(username);
+//            if (email != null) {
+//                showEmail.setText(email);
+//            }
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
             logout();
