@@ -83,7 +83,8 @@
                     android:icon="@drawable/dola"
                     android:title="Thống kê"
                     tools:ignore="HardcodedText" />
-            </menu>        </item>
+            </menu>
+        </item>
 
         <!-- Cài đặt -->
         <item
