@@ -38,7 +38,7 @@ public class UserDao {
     }
 
     // Cập nhật thông tin người dùng
-    public boolean updateUserProfile(UserModel user) {
+    public void updateUserProfile(UserModel user) {
         ContentValues values = new ContentValues();
         values.put("Username", user.getUsername());
         values.put("Password", user.getPassword());
@@ -52,7 +52,6 @@ public class UserDao {
         values.put("isActive", user.isActive() ? 1 : 0);
 
         int result = db.update("user", values, "ID_User = ?", new String[]{String.valueOf(user.getId())});
-        return result > 0;
     }
 
     // Xóa tài khoản
@@ -106,4 +105,17 @@ public class UserDao {
         cursor.close();
         return null;
     }
+
+    // Lấy ảnh profile của người dùng từ Username
+    public byte[] getProfileImage(String username) {
+        Cursor cursor = db.rawQuery("SELECT Image FROM user WHERE Username = ?", new String[]{username});
+        if (cursor.moveToFirst()) {
+            byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("Image"));
+            cursor.close();
+            return image;
+        }
+        cursor.close();
+        return null; // Trả về null nếu không tìm thấy ảnh
+    }
+
 }

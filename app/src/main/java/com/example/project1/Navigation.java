@@ -3,10 +3,13 @@ package com.example.project1;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,24 +48,37 @@ public class Navigation extends AppCompatActivity {
         // Khởi tạo SharedPreferences
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
+        // Kiểm tra xem người dùng có đăng nhập không
+        username = sharedPreferences.getString(KEY_USERNAME, null);
+        if (username == null) {
+            Toast.makeText(this, "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show();
+            logout(); // Điều hướng về màn hình đăng nhập nếu chưa đăng nhập
+            return;
+        }
+
         // Khởi tạo DatabaseHelper và UserDao
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
         userDao = new UserDao(db);
 
-        // Lấy thông tin người dùng từ SharedPreferences
-        username = sharedPreferences.getString(KEY_USERNAME, null);
-
-        // Khởi tạo các thành phần của giao diện
+        // Thiết lập giao diện
         toolbarTitle = findViewById(R.id.toolbar_title);
         drawerLayout = findViewById(R.id.navigationLayout);
-        setUpToolbar();
-
-        // Hiển thị tên người dùng
         navigationView = findViewById(R.id.navigation_view);
+
+        setUpToolbar(); // Thiết lập nút mở navigation drawer
         if (navigationView != null) {
+            setupNavigationHeader(); // Cập nhật header của Navigation Drawer
+            setUpNavigationView();  // Thiết lập xử lý sự kiện cho menu
+        }
+
+        // Cập nhật hình ảnh header nếu cần (sau khi thay đổi từ Profile)
+        String updatedImage = sharedPreferences.getString("updated_image", null);
+        if (updatedImage != null) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove("updated_image");
+            editor.apply();
             setupNavigationHeader();
-            setUpNavigationView();
         }
     }
 
@@ -83,11 +99,17 @@ public class Navigation extends AppCompatActivity {
     private void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
         TextView showUsername = view.findViewById(R.id.showUsername);
+        ImageView imageHeaderNavi = view.findViewById(R.id.imageHeaderNavi);
+        byte[] imageBytes = userDao.getProfileImage(username);
         if (username != null) {
             showUsername.setText(username);
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
             logout();
+        }
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imageHeaderNavi.setImageBitmap(bitmap);
         }
     }
 
