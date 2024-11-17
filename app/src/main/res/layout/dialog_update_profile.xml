@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/updateProfileLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/updateImageProfile"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="50dp"
+        android:src="@drawable/user"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularShape"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/font"
+        android:text="Họ và tên:"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_updateName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:hint="Nhập họ và tên"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="20sp"
+        tools:ignore="Autofill,HardcodedText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:text="Email:"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_updateEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:hint="Nhập email"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:textSize="20sp"
+        tools:ignore="Autofill,HardcodedText,TextFields" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:text="Số điện thoại:"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_updatePhoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:hint="Nhập số điện thoại"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        tools:ignore="Autofill,HardcodedText,TextFields" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_cancelProfile"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_profile_background"
+            android:fontFamily="@font/font"
+            android:text="Hủy"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:backgroundTint="@null"
+            tools:ignore="ButtonStyle,HardcodedText" />
+
+        <Button
+            android:id="@+id/btn_saveProfile"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/button_profile_background"
+            android:fontFamily="@font/font"
+            android:text="Lưu"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            app:backgroundTint="@null"
+            tools:ignore="ButtonStyle,HardcodedText" />
+    </LinearLayout>
+
+</LinearLayout>

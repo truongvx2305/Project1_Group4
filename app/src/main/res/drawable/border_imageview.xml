@@ -1,0 +1,13 @@
+<!-- res/drawable/rounded_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Màu nền của drawable -->
+    <solid android:color="#E0E0E0" /> <!-- Đặt màu theo ý muốn -->
+
+    <!-- Thiết lập bo góc -->
+    <corners android:radius="300dp" /> <!-- Độ bo góc (có thể thay đổi) -->
+
+    <!-- Tạo viền cho drawable -->
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF" /> <!-- Màu viền (có thể thay đổi) -->
+</shape>

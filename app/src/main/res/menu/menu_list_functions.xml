@@ -1,0 +1,111 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_home"
+            android:icon="@drawable/home"
+            android:title="Trang chủ"
+            tools:ignore="HardcodedText" />
+
+        <!-- Quản lý kho hàng -->
+        <item
+            android:id="@+id/item_warehouse_management"
+            android:icon="@drawable/ic_expand_more"
+            android:title="Quản lý kho hàng"
+            tools:ignore="HardcodedText">
+            <menu>
+                <item
+                    android:id="@+id/item_list_product"
+                    android:icon="@drawable/list"
+                    android:title="Danh sách sản phẩm"
+                    tools:ignore="HardcodedText" />
+
+                <item
+                    android:id="@+id/item_view_product"
+                    android:icon="@drawable/history"
+                    android:title="Lịch sử xuất - nhập kho"
+                    tools:ignore="HardcodedText" />
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/item_function_management"
+            android:icon="@drawable/ic_expand_more"
+            android:title="Chức năng"
+            tools:ignore="HardcodedText">
+            <menu>
+                <!-- Các chức năng khác -->
+                <item
+                    android:id="@+id/item_product_management"
+                    android:icon="@drawable/box"
+                    android:title="Quản lý sản phẩm"
+                    tools:ignore="HardcodedText" />
+
+                <item
+                    android:id="@+id/item_voucher_management"
+                    android:icon="@drawable/vocher"
+                    android:title="Quản lý voucher"
+                    tools:ignore="HardcodedText" />
+
+                <item
+                    android:id="@+id/item_bill_management"
+                    android:icon="@drawable/newspaper"
+                    android:title="Quản lý hóa đơn"
+                    tools:ignore="HardcodedText" />
+            </menu>
+        </item>
+
+        <item
+            android:id="@+id/item_employee_management"
+            android:icon="@drawable/user"
+            android:title="Quản lý nhân viên"
+            tools:ignore="HardcodedText" />
+
+        <item
+            android:id="@+id/item_customer_management"
+            android:icon="@drawable/people"
+            android:title="Quản lý khách hàng"
+            tools:ignore="HardcodedText" />
+
+        <!-- Báo cáo - Thống kê -->
+        <item
+            android:id="@+id/item_report_statistics"
+            android:icon="@drawable/ic_expand_more"
+            android:title="Báo cáo - Thống kê"
+            tools:ignore="HardcodedText">
+            <menu>
+                <item
+                    android:id="@+id/item_report"
+                    android:icon="@drawable/notifications"
+                    android:title="Báo cáo"
+                    tools:ignore="HardcodedText" />
+
+                <item
+                    android:id="@+id/item_statistics"
+                    android:icon="@drawable/dola"
+                    android:title="Thống kê"
+                    tools:ignore="HardcodedText" />
+            </menu>        </item>
+
+        <!-- Cài đặt -->
+        <item
+            android:id="@+id/item_settings"
+            android:icon="@drawable/ic_expand_more"
+            android:title="Cài đặt"
+            tools:ignore="HardcodedText">
+            <menu>
+                <item
+                    android:id="@+id/item_profile"
+                    android:icon="@drawable/user"
+                    android:title="Thông tin cá nhân"
+                    tools:ignore="HardcodedText" />
+                <item
+                    android:id="@+id/item_logout"
+                    android:icon="@drawable/logout"
+                    android:title="Đăng xuất"
+                    tools:ignore="HardcodedText" />
+            </menu>
+        </item>
+    </group>
+</menu>

@@ -1,0 +1,120 @@
+package com.example.project1.Function;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.project1.DB.DatabaseHelper;
+import com.example.project1.Dao.UserDao;
+import com.example.project1.Model.UserModel;
+import com.example.project1.Navigation;
+import com.example.project1.R;
+import com.google.android.material.textfield.TextInputEditText;
+
+public class Login extends AppCompatActivity {
+    private TextInputEditText edtUsername, edtPassword;
+    private Button btnLogin;
+    private CheckBox remember;
+    private DatabaseHelper dbHelper;
+    private SQLiteDatabase db;
+    private UserDao userDao;
+    private SharedPreferences sharedPreferences;
+
+    private static final String PREF_NAME = "user_prefs";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_REMEMBER = "remember";
+    private static final String KEY_IS_LOGGED_IN = "is_logged_in";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login);
+
+        // Khởi tạo SharedPreferences
+        sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        // Ánh xạ
+        edtUsername = findViewById(R.id.username);
+        edtPassword = findViewById(R.id.password);
+        btnLogin = findViewById(R.id.btn_login);
+        remember = findViewById(R.id.remember);
+
+        // Khởi tạo Database và UserDao
+        dbHelper = new DatabaseHelper(this);
+        db = dbHelper.getWritableDatabase();
+        userDao = new UserDao(db);
+
+        // Nếu đã chọn checkbox, tự động điền thông tin tài khoản
+        if (sharedPreferences.getBoolean(KEY_REMEMBER, false)) {
+            edtUsername.setText(sharedPreferences.getString(KEY_USERNAME, ""));
+            remember.setChecked(true);
+        }
+
+        // Sự kiện khi nhấn nút đăng nhập
+        btnLogin.setOnClickListener(v -> loginClick());
+    }
+
+    // Hàm xử lý khi nhấn nút đăng nhập
+    private void loginClick() {
+        String username = edtUsername.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(username)) {
+            edtUsername.setError("Vui lòng nhập tên tài khoản!");
+            return;
+        }
+        if (TextUtils.isEmpty(password)) {
+            edtPassword.setError("Vui lòng nhập mật khẩu!");
+            return;
+        }
+
+        // Tạo đối tượng User với thông tin đăng nhập
+        UserModel user = new UserModel();
+        user.setUsername(username);
+        user.setPassword(password);
+
+        // Kiểm tra mật khẩu
+        if (userDao.checkPassword(user)) {
+            // Đăng nhập thành công
+            Toast.makeText(this, "Xin chào " + username + "!", Toast.LENGTH_SHORT).show();
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            // Lưu trạng thái đăng nhập
+            editor.putBoolean(KEY_IS_LOGGED_IN, true);
+            // Lưu thông tin người dùng nếu chọn checkbox
+            if (remember.isChecked()) {
+                editor.putString(KEY_USERNAME, username);
+                editor.putBoolean(KEY_REMEMBER, true);
+            } else {
+                // Nếu không chọn checkbox, chỉ xóa thông tin tài khoản nhưng vẫn giữ trạng thái đăng nhập
+                editor.remove(KEY_USERNAME);
+                editor.putBoolean(KEY_REMEMBER, false);
+            }
+            editor.apply();
+
+            // Chuyển đến Navigation và xóa ngăn xếp
+            Intent intent = new Intent(Login.this, Navigation.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        } else {
+            // Đăng nhập thất bại
+            Toast.makeText(this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbHelper != null) dbHelper.close();
+        if (db != null && db.isOpen()) db.close();
+    }
+}

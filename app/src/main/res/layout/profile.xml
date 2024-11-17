@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/blue"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageProfile"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/user"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/CircularShape"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/code"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_idUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Mã người dùng"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/user"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_nameUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Tên người dùng"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/email"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_emailUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Email"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/phone"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_phoneNumberUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Phone number"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/role"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_roleUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Chức vụ"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/run"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/txv_statusUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/font"
+                android:hint="Trạng thái"
+                android:paddingStart="10dp"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText,RtlSymmetry" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_updateProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/button_profile_background"
+            android:fontFamily="@font/font"
+            android:text="Sửa hồ sơ"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:backgroundTint="@null"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+</LinearLayout>
