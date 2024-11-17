@@ -1,5 +1,6 @@
 package com.example.project1;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -96,22 +97,35 @@ public class Navigation extends AppCompatActivity {
     }
 
     // Hàm xử lý việc gán username khi đăng nhập vào header của NavigationView
+    @SuppressLint("SetTextI18n")
     private void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
         TextView showUsername = view.findViewById(R.id.showUsername);
+        TextView showEmail = view.findViewById(R.id.showEmail);
         ImageView imageHeaderNavi = view.findViewById(R.id.imageHeaderNavi);
+
+        // Lấy ảnh từ cơ sở dữ liệu
         byte[] imageBytes = userDao.getProfileImage(username);
-        if (username != null) {
-            showUsername.setText(username);
-        } else {
-            Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
-            logout();
-        }
         if (imageBytes != null) {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             imageHeaderNavi.setImageBitmap(bitmap);
         }
+
+        // Hiển thị username
+        if (username != null) {
+            showUsername.setText(username);
+
+            // Lấy email từ cơ sở dữ liệu
+            String email = userDao.getEmail(username);
+            if (email != null) {
+                showEmail.setText(email);
+            }
+        } else {
+            Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
+            logout();
+        }
     }
+
 
     private void setUpNavigationView() {
         navigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);

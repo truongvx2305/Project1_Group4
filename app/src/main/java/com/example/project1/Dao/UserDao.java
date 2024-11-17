@@ -118,4 +118,15 @@ public class UserDao {
         return null; // Trả về null nếu không tìm thấy ảnh
     }
 
+    // Lấy email theo tên người dùng
+    public String getEmail(String username) {
+        Cursor cursor = db.rawQuery("SELECT Email FROM user WHERE username = ?", new String[]{username});
+        if (cursor != null && cursor.moveToFirst()) {
+            String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
+            cursor.close();
+            return email;
+        }
+        if (cursor != null) cursor.close();
+        return null;
+    }
 }
