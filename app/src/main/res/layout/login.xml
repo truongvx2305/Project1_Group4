@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="@font/font"
-        android:text="Rất vui khi gặp lại bạn,"
+        android:text="Chào mừng quay lại,"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold"
