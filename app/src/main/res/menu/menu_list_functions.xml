@@ -11,7 +11,6 @@
         <!-- Quản lý kho hàng -->
         <item
             android:id="@+id/item_warehouse_management"
-            android:icon="@drawable/ic_expand_more"
             android:title="Quản lý kho hàng"
             tools:ignore="HardcodedText">
             <menu>
@@ -31,7 +30,6 @@
 
         <item
             android:id="@+id/item_function_management"
-            android:icon="@drawable/ic_expand_more"
             android:title="Chức năng"
             tools:ignore="HardcodedText">
             <menu>
@@ -71,7 +69,6 @@
         <!-- Báo cáo - Thống kê -->
         <item
             android:id="@+id/item_report_statistics"
-            android:icon="@drawable/ic_expand_more"
             android:title="Báo cáo - Thống kê"
             tools:ignore="HardcodedText">
             <menu>
@@ -91,7 +88,6 @@
         <!-- Cài đặt -->
         <item
             android:id="@+id/item_settings"
-            android:icon="@drawable/ic_expand_more"
             android:title="Cài đặt"
             tools:ignore="HardcodedText">
             <menu>
