@@ -20,4 +20,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/main_screen"
         tools:ignore="ContentDescription" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

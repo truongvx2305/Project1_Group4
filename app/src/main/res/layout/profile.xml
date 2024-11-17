@@ -26,8 +26,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="50dp"
-            android:src="@drawable/user1"
             android:scaleType="centerCrop"
+            android:src="@drawable/user1"
             app:shapeAppearanceOverlay="@style/CircularShape"
             tools:ignore="ContentDescription" />
 

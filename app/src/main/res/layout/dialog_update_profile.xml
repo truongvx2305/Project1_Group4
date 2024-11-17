@@ -16,8 +16,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="50dp"
-        android:src="@drawable/user1"
         android:scaleType="centerCrop"
+        android:src="@drawable/user1"
         app:shapeAppearanceOverlay="@style/CircularShape"
         tools:ignore="ContentDescription" />
 
@@ -40,7 +40,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/white"
         android:textSize="20sp"
-        tools:ignore="Autofill,HardcodedText" />
+        tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <TextView
         android:layout_width="wrap_content"

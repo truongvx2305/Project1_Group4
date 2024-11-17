@@ -27,6 +27,7 @@ import androidx.fragment.app.Fragment;
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
 import com.example.project1.Model.UserModel;
+import com.example.project1.Navigation;
 import com.example.project1.R;
 
 import java.io.ByteArrayOutputStream;
@@ -131,8 +132,14 @@ public class Profile extends Fragment {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("updated_image", Base64.encodeToString(imageBytes, Base64.DEFAULT));
             editor.apply();
+
+            // Thông báo Navigation Activity cập nhật lại header
+            if (getActivity() instanceof Navigation) {
+                ((Navigation) getActivity()).setupNavigationHeader();
+            }
         }
     }
+
 
 
     private void dialogUpdateProfile(TextView txvIdUser, TextView txvNameUser, TextView txvEmailUser, TextView txvPhoneNumberUser, TextView txvRoleUser, TextView txvStatusUser) {
