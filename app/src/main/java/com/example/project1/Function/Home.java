@@ -1,4 +1,4 @@
-package com.example.project1.Function.Management;
+package com.example.project1.Function;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.project1.R;
 
-public class Employee extends Fragment {
+public class Home extends Fragment {
     private String username;
 
     public void setUsername(String username) {
@@ -21,7 +21,7 @@ public class Employee extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.employee, container, false);
+        View view = inflater.inflate(R.layout.home, container, false);
 
         return view;
     }

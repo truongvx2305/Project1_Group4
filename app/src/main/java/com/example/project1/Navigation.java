@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -22,8 +23,11 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
+import com.example.project1.Function.Home;
 import com.example.project1.Function.Login;
+import com.example.project1.Function.Management.Employee;
 import com.example.project1.Function.Profile;
+import com.example.project1.Model.UserModel;
 import com.google.android.material.navigation.NavigationView;
 
 public class Navigation extends AppCompatActivity {
@@ -49,12 +53,11 @@ public class Navigation extends AppCompatActivity {
         // Khởi tạo SharedPreferences
         sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
 
-        // Kiểm tra xem người dùng có đăng nhập không
-        username = sharedPreferences.getString(KEY_USERNAME, null);
-        if (username == null) {
-            Toast.makeText(this, "Vui lòng đăng nhập!", Toast.LENGTH_SHORT).show();
-            logout(); // Điều hướng về màn hình đăng nhập nếu chưa đăng nhập
-            return;
+        // Kiểm tra trạng thái đăng nhập
+        if (!sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false)) {
+            logout();
+        } else {
+            username = sharedPreferences.getString(KEY_USERNAME, null);
         }
 
         // Khởi tạo DatabaseHelper và UserDao
@@ -73,14 +76,14 @@ public class Navigation extends AppCompatActivity {
             setUpNavigationView();  // Thiết lập xử lý sự kiện cho menu
         }
 
-        // Cập nhật hình ảnh header nếu cần (sau khi thay đổi từ Profile)
-        String updatedImage = sharedPreferences.getString("updated_image", null);
-        if (updatedImage != null) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("updated_image");
-            editor.apply();
-            setupNavigationHeader();
-        }
+        navigateToHome();
+    }
+
+    private void navigateToHome() {
+        Home homeFragment = new Home();
+        homeFragment.setUsername(username);
+        loadFragment(homeFragment, "Trang chủ");
+        updateNavigationViewSelection(homeFragment);
     }
 
     private void setUpToolbar() {
@@ -96,7 +99,6 @@ public class Navigation extends AppCompatActivity {
         }
     }
 
-    // Hàm xử lý việc gán username khi đăng nhập vào header của NavigationView
     @SuppressLint("SetTextI18n")
     public void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
@@ -105,23 +107,41 @@ public class Navigation extends AppCompatActivity {
 
         // Lấy ảnh từ cơ sở dữ liệu
         byte[] imageBytes = userDao.getProfileImage(username);
-        if (imageBytes != null) {
+        if (imageBytes == null || imageBytes.length == 0) {
+            imageHeaderNavi.setImageResource(R.drawable.user1); // Ảnh mặc định
+        } else {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
             imageHeaderNavi.setImageBitmap(bitmap);
-        } else {
-            imageHeaderNavi.setImageResource(R.drawable.user1); // Thay bằng ảnh mặc định
         }
-
 
         // Hiển thị username
         if (username != null) {
             showUsername.setText("Chào " + username + ",");
+
+            // Kiểm tra vai trò người dùng
+            UserModel user = userDao.getProfileByUsername(username);
+            if (user != null && !user.isAdmin()) {
+                // Danh sách các mục cần ẩn cho nhân viên
+                int[] restrictedItems = {
+                        R.id.item_employee_management,
+                        R.id.item_report_statistics,
+                        R.id.item_view_product,
+                        R.id.item_voucher_management
+                };
+
+                // Ẩn tất cả mục trong danh sách
+                for (int itemId : restrictedItems) {
+                    MenuItem item = navigationView.getMenu().findItem(itemId);
+                    if (item != null) {
+                        item.setVisible(false);
+                    }
+                }
+            }
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
             logout();
         }
     }
-
 
     private void setUpNavigationView() {
         navigationView.setNavigationItemSelectedListener(this::onNavigationItemSelected);
@@ -135,7 +155,15 @@ public class Navigation extends AppCompatActivity {
 
         int itemId = menuItem.getItemId();
 
-        if (itemId == R.id.item_profile) {
+        if (itemId == R.id.item_home) {
+            fragment = new Home();
+            ((Home) fragment).setUsername(username);
+            title = "Trang chủ";
+        } else if (itemId == R.id.item_employee_management) {
+            fragment = new Employee();
+            ((Employee) fragment).setUsername(username);
+            title = "Quản lý nhân viên";
+        } else if (itemId == R.id.item_profile) {
             fragment = new Profile();
             ((Profile) fragment).setUsername(username);
             title = "Thông tin cá nhân";
@@ -155,7 +183,8 @@ public class Navigation extends AppCompatActivity {
     private void loadFragment(Fragment fragment, String title) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
         if (currentFragment != null && currentFragment.getClass().equals(fragment.getClass())) {
-            return; // Không thay thế nếu fragment hiện tại giống với fragment mới
+            toolbarTitle.setText(title);
+            return;
         }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_view, fragment);
@@ -165,9 +194,25 @@ public class Navigation extends AppCompatActivity {
     }
 
     private void updateNavigationViewSelection(Fragment fragment) {
-        MenuItem item = null;
+        // Bỏ chọn tất cả các mục
+        for (int i = 0; i < navigationView.getMenu().size(); i++) {
+            MenuItem parentItem = navigationView.getMenu().getItem(i);
+            parentItem.setChecked(false);
+            if (parentItem.hasSubMenu()) {
+                for (int j = 0; j < parentItem.getSubMenu().size(); j++) {
+                    MenuItem childItem = parentItem.getSubMenu().getItem(j);
+                    childItem.setChecked(false);
+                }
+            }
+        }
 
-        if (fragment instanceof Profile) {
+        // Đặt mục đang được chọn
+        MenuItem item = null;
+        if (fragment instanceof Home) {
+            item = navigationView.getMenu().findItem(R.id.item_home);
+        } else if (fragment instanceof Employee) {
+            item = navigationView.getMenu().findItem(R.id.item_employee_management);
+        } else if (fragment instanceof Profile) {
             item = navigationView.getMenu().findItem(R.id.item_profile);
         }
 
@@ -175,6 +220,7 @@ public class Navigation extends AppCompatActivity {
             item.setChecked(true);
         }
     }
+
 
     private void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
