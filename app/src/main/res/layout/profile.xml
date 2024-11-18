@@ -9,27 +9,49 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/imageProfile"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/user2"
+        app:shapeAppearanceOverlay="@style/CircularShape"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/txv_nameUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font"
+        android:text="Tên người dùng"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        tools:ignore="HardcodedText,RtlSymmetry" />
+
+    <TextView
+        android:id="@+id/txv_emailUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/font"
+        android:text="email@gmail.com"
+        android:textColor="@color/blue"
+        android:textSize="18sp"
+        tools:ignore="HardcodedText,RtlSymmetry" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
-        android:background="@color/blue"
+        android:background="@drawable/background_information"
         android:orientation="vertical"
-        android:padding="10dp">
-
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imageProfile"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="50dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/user1"
-            app:shapeAppearanceOverlay="@style/CircularShape"
-            tools:ignore="ContentDescription" />
+        android:padding="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,58 +88,6 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/user1"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/txv_nameUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/font"
-                android:hint="Tên người dùng"
-                android:paddingStart="10dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText,RtlSymmetry" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/email"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:id="@+id/txv_emailUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/font"
-                android:hint="Email"
-                android:paddingStart="10dp"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="20sp"
-                tools:ignore="HardcodedText,RtlSymmetry" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:src="@drawable/phone"
                 tools:ignore="ContentDescription" />
 
@@ -126,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font"
-                android:hint="Phone number"
+                android:hint="Số điện thoại"
                 android:paddingStart="10dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
@@ -191,7 +161,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/button_profile_background"
             android:fontFamily="@font/font"
             android:text="Sửa hồ sơ"
