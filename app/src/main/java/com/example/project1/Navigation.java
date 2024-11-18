@@ -70,22 +70,30 @@ public class Navigation extends AppCompatActivity {
         drawerLayout = findViewById(R.id.navigationLayout);
         navigationView = findViewById(R.id.navigation_view);
 
-        setUpToolbar(); // Thiết lập nút mở navigation drawer
+        setUpToolbar();
         if (navigationView != null) {
-            setupNavigationHeader(); // Cập nhật header của Navigation Drawer
-            setUpNavigationView();  // Thiết lập xử lý sự kiện cho menu
+            setupNavigationHeader();
+            checkRole();
+            setUpNavigationView();
         }
 
         navigateToHome();
     }
 
+    // Mở màn hình Home sau khi đăng nhập thành công
     private void navigateToHome() {
         Home homeFragment = new Home();
         homeFragment.setUsername(username);
         loadFragment(homeFragment, "Trang chủ");
-        updateNavigationViewSelection(homeFragment);
+
+        // Đặt trạng thái được chọn cho mục "Trang chủ"
+        MenuItem homeItem = navigationView.getMenu().findItem(R.id.item_home);
+        if (homeItem != null) {
+            homeItem.setChecked(true);
+        }
     }
 
+    // Thiết lập toolbar và sự kiện click mở navigationView
     private void setUpToolbar() {
         ImageButton drawerToggleButton = findViewById(R.id.action_toolbar);
         if (drawerToggleButton != null) {
@@ -99,47 +107,54 @@ public class Navigation extends AppCompatActivity {
         }
     }
 
+    // Hển thị ảnh và tên người dùng trên header navigation
     @SuppressLint("SetTextI18n")
     public void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
         TextView showUsername = view.findViewById(R.id.showUsername);
-        ImageView imageHeaderNavi = view.findViewById(R.id.imageHeaderNavigation);
+        ImageView imageHeaderNavigation = view.findViewById(R.id.imageHeaderNavigation);
 
         // Lấy ảnh từ cơ sở dữ liệu
         byte[] imageBytes = userDao.getProfileImage(username);
         if (imageBytes == null || imageBytes.length == 0) {
-            imageHeaderNavi.setImageResource(R.drawable.user1); // Ảnh mặc định
+            imageHeaderNavigation.setImageResource(R.drawable.user1); // Ảnh mặc định
         } else {
             Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
-            imageHeaderNavi.setImageBitmap(bitmap);
+            imageHeaderNavigation.setImageBitmap(bitmap);
         }
 
         // Hiển thị username
         if (username != null) {
             showUsername.setText("Chào " + username + ",");
-
-            // Kiểm tra vai trò người dùng
-            UserModel user = userDao.getProfileByUsername(username);
-            if (user != null && !user.isAdmin()) {
-                // Danh sách các mục cần ẩn cho nhân viên
-                int[] restrictedItems = {
-                        R.id.item_employee_management,
-                        R.id.item_report_statistics,
-                        R.id.item_view_product,
-                        R.id.item_voucher_management
-                };
-
-                // Ẩn tất cả mục trong danh sách
-                for (int itemId : restrictedItems) {
-                    MenuItem item = navigationView.getMenu().findItem(itemId);
-                    if (item != null) {
-                        item.setVisible(false);
-                    }
-                }
-            }
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
             logout();
+        }
+    }
+
+    // Kiểm tra vai trò người dùng và ẩn các chức năng không được dùng phía nhân viên
+    private void checkRole() {
+        // Kiểm tra vai trò người dùng
+        UserModel user = userDao.getProfileByUsername(username);
+        if (user != null && !user.isAdmin()) {
+            // Danh sách các mục cần ẩn cho nhân viên
+            int[] restrictedItems = {
+                    R.id.item_view_product,
+                    R.id.item_product_management,
+                    R.id.item_voucher_management,
+                    R.id.item_employee_management,
+                    R.id.item_report_statistics
+            };
+
+            // Ẩn tất cả mục trong danh sách
+            for (int itemId : restrictedItems) {
+                MenuItem item = navigationView.getMenu().findItem(itemId);
+                if (item != null) {
+                    item.setVisible(false);
+                }
+            }
+        } else {
+            Log.e("Navigation", "Không tìm thấy người dùng!");
         }
     }
 
@@ -174,8 +189,9 @@ public class Navigation extends AppCompatActivity {
             return false;
         }
         if (fragment != null) {
+            // Đánh dấu mục đã chọn
+            menuItem.setChecked(true);
             loadFragment(fragment, title);
-            updateNavigationViewSelection(fragment);
         }
         return true;
     }
@@ -192,35 +208,6 @@ public class Navigation extends AppCompatActivity {
         transaction.commit();
         toolbarTitle.setText(title);
     }
-
-    private void updateNavigationViewSelection(Fragment fragment) {
-        // Bỏ chọn tất cả các mục
-        for (int i = 0; i < navigationView.getMenu().size(); i++) {
-            MenuItem parentItem = navigationView.getMenu().getItem(i);
-            parentItem.setChecked(false);
-            if (parentItem.hasSubMenu()) {
-                for (int j = 0; j < parentItem.getSubMenu().size(); j++) {
-                    MenuItem childItem = parentItem.getSubMenu().getItem(j);
-                    childItem.setChecked(false);
-                }
-            }
-        }
-
-        // Đặt mục đang được chọn
-        MenuItem item = null;
-        if (fragment instanceof Home) {
-            item = navigationView.getMenu().findItem(R.id.item_home);
-        } else if (fragment instanceof Employee) {
-            item = navigationView.getMenu().findItem(R.id.item_employee_management);
-        } else if (fragment instanceof Profile) {
-            item = navigationView.getMenu().findItem(R.id.item_profile);
-        }
-
-        if (item != null) {
-            item.setChecked(true);
-        }
-    }
-
 
     private void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
