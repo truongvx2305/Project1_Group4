@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.project1.Model.UserModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserDao {
     private final SQLiteDatabase db;
 
@@ -104,6 +107,32 @@ public class UserDao {
         }
         cursor.close();
         return null;
+    }
+
+    public List<UserModel> getAllEmployees() {
+        List<UserModel> employees = new ArrayList<>();
+        // Thêm điều kiện WHERE để chỉ lấy những người dùng không phải Admin
+        Cursor cursor = db.rawQuery("SELECT * FROM user WHERE isAdmin = 0", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_User"));
+                String username = cursor.getString(cursor.getColumnIndexOrThrow("Username"));
+                String password = cursor.getString(cursor.getColumnIndexOrThrow("Password"));
+                byte[] image = cursor.getBlob(cursor.getColumnIndexOrThrow("Image"));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("Name"));
+                String email = cursor.getString(cursor.getColumnIndexOrThrow("Email"));
+                String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("Phone_Number"));
+                boolean isAdmin = cursor.getInt(cursor.getColumnIndexOrThrow("isAdmin")) == 1;
+                boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow("isActive")) == 1;
+
+                UserModel employee = new UserModel(id, username, password, image, name, email, phoneNumber, isAdmin, isActive);
+                employees.add(employee);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return employees;
     }
 
     // Lấy ảnh profile của người dùng từ Username
