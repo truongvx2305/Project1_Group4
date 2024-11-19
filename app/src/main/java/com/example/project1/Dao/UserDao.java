@@ -32,8 +32,13 @@ public class UserDao {
         values.put("Security_Lock", user.getSecurityLock()); // Thêm Security Lock
 
         long result = db.insert("user", null, values);
-        return result != -1;
+        if (result != -1) {
+            user.setId((int) result); // Gán ID vừa được sinh ra
+            return true;
+        }
+        return false;
     }
+
 
     // Cập nhật mật khẩu
     public boolean updatePassword(UserModel user, String newPassword) {

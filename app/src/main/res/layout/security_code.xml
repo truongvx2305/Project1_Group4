@@ -7,17 +7,6 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/securityMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/font"
-        android:gravity="center"
-        android:paddingBottom="8dp"
-        android:text="Tạo - đổi khóa bảo mật"
-        android:textSize="20sp"
-        tools:ignore="HardcodedText" />
-
     <EditText
         android:id="@+id/edt_securityCode1"
         android:layout_width="match_parent"
@@ -47,7 +36,7 @@
 
         <Button
             android:id="@+id/btn_updateSecurity"
-            android:layout_width="150dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/blue"
@@ -57,9 +46,9 @@
 
         <Button
             android:id="@+id/btn_addSecurity"
-            android:layout_width="150dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="40dp"
             android:layout_marginTop="16dp"
             android:backgroundTint="@color/blue"
             android:fontFamily="@font/font"

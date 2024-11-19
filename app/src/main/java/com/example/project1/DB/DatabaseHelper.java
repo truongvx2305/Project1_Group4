@@ -10,7 +10,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String userTable = "user";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 5);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         adminUser.put("Phone_Number", "0123456789");
         adminUser.put("isAdmin", 1);
         adminUser.put("isActive", 1);
-        adminUser.put("Security_Lock", "12345"); // Thêm Security Lock mặc định
 
         db.insert(userTable, null, adminUser);
     }
@@ -81,7 +80,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         employeeUser.put("Phone_Number", "0987654321");
         employeeUser.put("isAdmin", 0); // 0 cho false
         employeeUser.put("isActive", 1); // 1 cho true
-        employeeUser.put("Security_Lock", "12345");
 
         db.insert(userTable, null, employeeUser);
     }
@@ -95,7 +93,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         employeeUser2.put("Phone_Number", "0896745231");
         employeeUser2.put("isAdmin", 0); // 0 cho false
         employeeUser2.put("isActive", 1); // 1 cho true
-        employeeUser2.put("Security_Lock", "12345");
 
         db.insert(userTable, null, employeeUser2);
     }

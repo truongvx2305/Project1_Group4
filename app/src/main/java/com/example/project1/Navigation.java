@@ -59,6 +59,10 @@ public class Navigation extends AppCompatActivity {
             logout();
         } else {
             username = sharedPreferences.getString(KEY_USERNAME, null);
+            if (username == null) {
+                Toast.makeText(this, "Không tìm thấy thông tin tài khoản. Vui lòng đăng nhập lại!", Toast.LENGTH_SHORT).show();
+                logout();
+            }
         }
 
         // Log trạng thái đăng nhập
@@ -116,7 +120,7 @@ public class Navigation extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     public void setupNavigationHeader() {
         View view = navigationView.getHeaderView(0);
-        TextView showUsername = view.findViewById(R.id.showUsername);
+        TextView showUsername = view.findViewById(R.id.showUsernameHeaderNavigation);
         ImageView imageHeaderNavigation = view.findViewById(R.id.imageHeaderNavigation);
 
         // Lấy ảnh từ cơ sở dữ liệu
@@ -192,6 +196,7 @@ public class Navigation extends AppCompatActivity {
             title = "Trang chủ";
         } else if (itemId == R.id.item_employee_management) {
             fragment = new Employee();
+            ((Employee) fragment).setUsername(username);
             title = "Quản lý nhân viên";
         } else if (itemId == R.id.item_profile) {
             fragment = new Profile();
@@ -201,7 +206,7 @@ public class Navigation extends AppCompatActivity {
             fragment = new SecurityCode();
             ((SecurityCode) fragment).setUsername(username);
             title = "Khóa bảo mật";
-        }else if (itemId == R.id.item_logout) {
+        } else if (itemId == R.id.item_logout) {
             logout();
             return true;
         } else {
@@ -215,12 +220,13 @@ public class Navigation extends AppCompatActivity {
         return true;
     }
 
-    private void loadFragment(Fragment fragment, String title) {
+    public void loadFragment(Fragment fragment, String title) {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_view);
         if (currentFragment != null && currentFragment.getClass().equals(fragment.getClass())) {
             toolbarTitle.setText(title);
             return;
         }
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_view, fragment);
         transaction.addToBackStack(null);

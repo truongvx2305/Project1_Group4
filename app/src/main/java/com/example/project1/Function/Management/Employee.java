@@ -3,14 +3,17 @@ package com.example.project1.Function.Management;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,17 +26,23 @@ import com.example.project1.Dao.UserDao;
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Model.UserModel;
 import com.example.project1.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Employee extends Fragment {
+    private String username;
     private EditText searchEmployee;
     private ImageView filterEmployee;
     private ListView listEmployee;
     private List<UserModel> employeeList; // Danh sách gốc
     private EmployeeAdapter adapter;     // Adapter hiển thị
     private Integer currentFilterStatus = null; // Biến lưu trạng thái hiện tại (null: không có bộ lọc)
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @Nullable
     @Override
@@ -50,7 +59,7 @@ public class Employee extends Fragment {
 
         // Gán adapter cho ListView
         listEmployee = view.findViewById(R.id.listEmployee);
-        adapter = new EmployeeAdapter(getContext(), employeeList);
+        adapter = new EmployeeAdapter(getContext(), employeeList, username); // Truyền username
         listEmployee.setAdapter(adapter);
 
         // Tìm kiếm
@@ -73,7 +82,12 @@ public class Employee extends Fragment {
 
         // Lọc theo trạng thái
         filterEmployee = view.findViewById(R.id.filterEmployee);
-        filterEmployee.setOnClickListener(this::filterAction);
+        filterEmployee.setOnClickListener(this::filterClick);
+
+        FloatingActionButton btnAddEmployee = view.findViewById(R.id.btn_addEmployee);
+        btnAddEmployee.setOnClickListener(v -> {
+            showDialogAddEmployee();
+        });
 
         return view;
     }
@@ -103,11 +117,11 @@ public class Employee extends Fragment {
         }
 
         // Cập nhật adapter với danh sách đã lọc
-        adapter = new EmployeeAdapter(getContext(), filteredList);
+        adapter = new EmployeeAdapter(getContext(), filteredList, username);
         listEmployee.setAdapter(adapter);
     }
 
-    private void filterAction(View v) {
+    private void filterClick(View v) {
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.menu_filter_status, popupMenu.getMenu());
 
@@ -149,50 +163,64 @@ public class Employee extends Fragment {
         popupMenu.show();
     }
 
-    private void showEmployeeDetailDialog(UserModel employee) {
+    private void showDialogAddEmployee() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_employee_detail, null);
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_add_employee, null);
         builder.setView(dialogView);
 
-        // Ánh xạ các thành phần trong Dialog
-        TextView idEmployeeDetail = dialogView.findViewById(R.id.idEmployeeDetail);
-        TextView nameEmployeeDetail = dialogView.findViewById(R.id.nameEmployeeDetail);
-        TextView emailEmployeeDetail = dialogView.findViewById(R.id.emailEmployeeDetail);
-        TextView phoneEmployeeDetail = dialogView.findViewById(R.id.phoneEmployeeDetail);
-        TextView roleEmployeeDetail = dialogView.findViewById(R.id.roleEmployeeDetail);
-        ImageView imgEmployee = dialogView.findViewById(R.id.imgEmployee);
+        EditText usernameAddEmployee = dialogView.findViewById(R.id.usernameAddEmployee);
+        EditText passwordAddEmployee = dialogView.findViewById(R.id.passwordAddEmployee);
 
-        // Hiển thị thông tin từ đối tượng `UserModel`
-        idEmployeeDetail.setText(String.format("Mã nhân viên: %s", employee.getId()));
-        nameEmployeeDetail.setText(String.format("Họ và tên: %s", employee.getName()));
-        emailEmployeeDetail.setText(String.format("Email: %s", employee.getEmail()));
-        phoneEmployeeDetail.setText(String.format("Số điện thoại: %s", employee.getPhoneNumber()));
-        roleEmployeeDetail.setText(String.format("Chức vụ: %s", employee.getRole()));
+        builder.setPositiveButton("Thêm", null); // Để null để xử lý kiểm tra sau
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
-        // Đặt ảnh nếu có (hoặc ảnh mặc định)
-        imgEmployee.setImageResource(R.drawable.user2);
+        AlertDialog dialog = builder.create();
 
-        // Thêm nút đóng
-        builder.setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss());
+        dialog.setOnShowListener(dialogInterface -> {
+            Button addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            addButton.setOnClickListener(v -> {
+                String username = usernameAddEmployee.getText().toString().trim();
+                String password = passwordAddEmployee.getText().toString().trim();
 
-        // Hiển thị Dialog
-        builder.create().show();
-    }
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
+                    Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-    private void showAccountPassword(UserModel employee) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Tài khoản mật khẩu");
+                // Kiểm tra trùng lặp tên đăng nhập
+                DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                UserDao userDao = new UserDao(db);
 
-        // Nội dung thông tin tài khoản
-        String message = String.format("Tên đăng nhập: %s\nMật khẩu: %s",
-                employee.getUsername(), employee.getPassword());
-        builder.setMessage(message);
+                if (userDao.checkUsername(username)) {
+                    Toast.makeText(getContext(), "Tên đăng nhập đã tồn tại", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        // Nút đóng
-        builder.setPositiveButton("Đóng", (dialog, which) -> dialog.dismiss());
+                // Tạo đối tượng UserModel mới
+                UserModel newEmployee = new UserModel();
+                newEmployee.setUsername(username);
+                newEmployee.setPassword(password);
+                newEmployee.setAdmin(false);
+                newEmployee.setActive(true);
 
-        builder.create().show();
+                // Thêm vào cơ sở dữ liệu
+                boolean isInserted = userDao.insert(newEmployee);
+
+                if (isInserted) {
+                    // Cập nhật danh sách hiển thị
+                    employeeList.add(newEmployee);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(getContext(), "Thêm nhân viên thành công", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(getContext(), "Có lỗi xảy ra khi thêm nhân viên", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        dialog.show();
     }
 
 }

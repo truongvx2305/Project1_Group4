@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
+import com.example.project1.Function.SecurityCode;
 import com.example.project1.Model.UserModel;
+import com.example.project1.Navigation;
 import com.example.project1.R;
 
 import java.util.List;
@@ -28,10 +32,12 @@ import java.util.List;
 public class EmployeeAdapter extends BaseAdapter {
     private Context context;
     private List<UserModel> employeeList;
+    private String username;
 
-    public EmployeeAdapter(Context context, List<UserModel> employeeList) {
+    public EmployeeAdapter(Context context, List<UserModel> employeeList, String username) {
         this.context = context;
         this.employeeList = employeeList;
+        this.username = username;
     }
 
     @Override
@@ -100,16 +106,16 @@ public class EmployeeAdapter extends BaseAdapter {
     @SuppressLint("SetTextI18n")
     private void showEmployeeDetailDialog(UserModel employee) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_employee_detail, null);
-        builder.setView(dialogView);
+        View dialogDetailView = LayoutInflater.from(context).inflate(R.layout.dialog_employee_detail, null);
+        builder.setView(dialogDetailView);
 
-        TextView idEmployeeDetail = dialogView.findViewById(R.id.idEmployeeDetail);
-        TextView nameEmployeeDetail = dialogView.findViewById(R.id.nameEmployeeDetail);
-        TextView emailEmployeeDetail = dialogView.findViewById(R.id.emailEmployeeDetail);
-        TextView phoneEmployeeDetail = dialogView.findViewById(R.id.phoneEmployeeDetail);
-        TextView roleEmployeeDetail = dialogView.findViewById(R.id.roleEmployeeDetail);
-        ImageView imgEmployeeDetail = dialogView.findViewById(R.id.imgEmployeeDetail);
-        Spinner statusEmployeeDetail = dialogView.findViewById(R.id.statusEmployeeDetail);
+        TextView idEmployeeDetail = dialogDetailView.findViewById(R.id.idEmployeeDetail);
+        TextView nameEmployeeDetail = dialogDetailView.findViewById(R.id.nameEmployeeDetail);
+        TextView emailEmployeeDetail = dialogDetailView.findViewById(R.id.emailEmployeeDetail);
+        TextView phoneEmployeeDetail = dialogDetailView.findViewById(R.id.phoneEmployeeDetail);
+        TextView roleEmployeeDetail = dialogDetailView.findViewById(R.id.roleEmployeeDetail);
+        ImageView imgEmployeeDetail = dialogDetailView.findViewById(R.id.imgEmployeeDetail);
+        Spinner statusEmployeeDetail = dialogDetailView.findViewById(R.id.statusEmployeeDetail);
 
         // Đổ dữ liệu
         idEmployeeDetail.setText("Mã nhân viên: " + employee.getId());
@@ -165,16 +171,40 @@ public class EmployeeAdapter extends BaseAdapter {
     }
 
     // Hiển thị tài khoản và mật khẩu
+    // Hiển thị tài khoản và mật khẩu
     @SuppressLint("SetTextI18n")
     private void showAccountPassword(UserModel employee) {
-        // Tạo dialog từ layout
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_security_code, null);
-        builder.setView(dialogView);
+        // Kiểm tra xem người dùng đã có mã bảo mật chưa
+        UserDao userDao = new UserDao(new DatabaseHelper(context).getReadableDatabase());
+        String existingLock = userDao.getSecurityLock(username); // Sử dụng username của người dùng đăng nhập
 
-        EditText securityCodeDialog = dialogView.findViewById(R.id.edt_securityCodeDialog);
-        TextView SecurityMessageDialog = dialogView.findViewById(R.id.securityMessageDialog);
-        Button btnSubmit = dialogView.findViewById(R.id.btn_submitSecurity);
+        if (TextUtils.isEmpty(existingLock)) {
+            // Hiển thị dialog gợi ý tạo mã bảo mật
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Tạo mã bảo mật");
+            builder.setMessage("Bạn chưa có mã bảo mật. Bạn có muốn tạo mã bảo mật không?");
+            builder.setPositiveButton("Có", (dialog, which) -> {
+                // Chuyển sang fragment thêm mã bảo mật
+                if (context instanceof Navigation) {
+                    Navigation navigation = (Navigation) context;
+                    Fragment securityCodeFragment = new SecurityCode();
+                    ((SecurityCode) securityCodeFragment).setUsername(username); // Truyền username của người dùng đăng nhập
+                    navigation.loadFragment(securityCodeFragment, "Khóa bảo mật");
+                }
+            });
+            builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
+            builder.create().show();
+            return;
+        }
+
+        // Tạo dialog nhập mã bảo mật
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogSecurityView = LayoutInflater.from(context).inflate(R.layout.dialog_security_code, null);
+        builder.setView(dialogSecurityView);
+
+        EditText securityCodeDialog = dialogSecurityView.findViewById(R.id.edt_securityCodeDialog);
+        TextView SecurityMessageDialog = dialogSecurityView.findViewById(R.id.securityMessageDialog);
+        Button btnSubmit = dialogSecurityView.findViewById(R.id.btn_submitSecurity);
 
         AlertDialog dialog = builder.create();
 
@@ -188,14 +218,30 @@ public class EmployeeAdapter extends BaseAdapter {
             }
 
             // Kiểm tra mã bảo mật
-            UserDao userDao = new UserDao(new DatabaseHelper(context).getReadableDatabase());
-            if (userDao.checkSecurityLock(employee.getUsername(), securityCode)) {
+            if (userDao.checkSecurityLock(username, securityCode)) {
                 dialog.dismiss();
 
                 // Hiển thị thông tin tài khoản và mật khẩu
                 AlertDialog.Builder accountDialogBuilder = new AlertDialog.Builder(context);
-                accountDialogBuilder.setTitle("Tài khoản & mật khẩu");
-                accountDialogBuilder.setMessage("Tên đăng nhập: " + employee.getUsername() + "\nMật khẩu: " + employee.getPassword());
+                View dialogShowAccountView = LayoutInflater.from(context).inflate(R.layout.dialog_show_username_password, null);
+                accountDialogBuilder.setView(dialogShowAccountView);
+
+                TextView nameShowUsernamePassword = dialogShowAccountView.findViewById(R.id.nameShowUsernamePassword);
+                TextView showUsername = dialogShowAccountView.findViewById(R.id.showUsername);
+                TextView showPassword = dialogShowAccountView.findViewById(R.id.showPassword);
+                ImageView imgShowUsernamePassword = dialogShowAccountView.findViewById(R.id.imgShowUsernamePassword);
+
+                byte[] imageBytes = employee.getImage();
+                if (imageBytes != null) {
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+                    imgShowUsernamePassword.setImageBitmap(bitmap);
+                } else {
+                    imgShowUsernamePassword.setImageResource(R.drawable.user2); // Ảnh mặc định
+                }
+                nameShowUsernamePassword.setText("Họ và tên: " + employee.getName());
+                showUsername.setText("Tên tài khoản: " + employee.getUsername());
+                showPassword.setText("Mật khẩu: " + employee.getPassword());
+
                 accountDialogBuilder.setPositiveButton("Đóng", (d, which) -> d.dismiss());
                 accountDialogBuilder.create().show();
             } else {

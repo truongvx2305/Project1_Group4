@@ -185,28 +185,28 @@ public class Profile extends Fragment {
 
             // Kiểm tra dữ liệu hợp lệ
             if (name.isEmpty()) {
-                edt_updateName.setError("Tên không được để trống");
+                edt_updateName.setError("Tên không được để trống!");
                 return;
             }
 
             if (!email.matches("^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
-                edt_updateEmail.setError("Email không hợp lệ");
+                edt_updateEmail.setError("Email không hợp lệ!");
                 return;
             }
 
             if (phoneNumber.length() != 10 || !phoneNumber.matches("\\d+")) {
-                edt_updatePhoneNumber.setError("Số điện thoại phải có 10 chữ số");
+                edt_updatePhoneNumber.setError("Số điện thoại phải có 10 chữ số!");
                 return;
             }
 
             // Kiểm tra trùng lặp email và số điện thoại
             if (userDao.isEmailExists(email) && !email.equals(userModel.getEmail())) {
-                edt_updateEmail.setError("Email này đã được sử dụng bởi người dùng khác");
+                edt_updateEmail.setError("Email này đã được sử dụng bởi người dùng khác!");
                 return;
             }
 
             if (userDao.isPhoneNumberExists(phoneNumber) && !phoneNumber.equals(userModel.getPhoneNumber())) {
-                edt_updatePhoneNumber.setError("Số điện thoại này đã được sử dụng bởi người dùng khác");
+                edt_updatePhoneNumber.setError("Số điện thoại này đã được sử dụng bởi người dùng khác!");
                 return;
             }
 

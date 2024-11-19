@@ -22,7 +22,7 @@ import com.google.android.material.textfield.TextInputEditText;
 public class Login extends AppCompatActivity {
     private TextInputEditText edtUsername, edtPassword;
     private Button btnLogin;
-    private CheckBox remember;
+    // private CheckBox remember;
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
     private UserDao userDao;
@@ -45,7 +45,7 @@ public class Login extends AppCompatActivity {
         edtUsername = findViewById(R.id.username);
         edtPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.btn_login);
-        remember = findViewById(R.id.remember);
+        // remember = findViewById(R.id.remember);
 
         // Khởi tạo Database và UserDao
         dbHelper = new DatabaseHelper(this);
@@ -53,15 +53,16 @@ public class Login extends AppCompatActivity {
         userDao = new UserDao(db);
 
         // Nếu đã chọn checkbox, tự động điền thông tin tài khoản
-        if (sharedPreferences.getBoolean(KEY_REMEMBER, false)) {
-            edtUsername.setText(sharedPreferences.getString(KEY_USERNAME, ""));
-            remember.setChecked(true);
-        }
+        // if (sharedPreferences.getBoolean(KEY_REMEMBER, false)) {
+        //    edtUsername.setText(sharedPreferences.getString(KEY_USERNAME, ""));
+        //    remember.setChecked(true);
+        //}
 
         // Sự kiện khi nhấn nút đăng nhập
         btnLogin.setOnClickListener(v -> loginClick());
     }
 
+    // Hàm xử lý khi nhấn nút đăng nhập
     // Hàm xử lý khi nhấn nút đăng nhập
     private void loginClick() {
         String username = edtUsername.getText().toString().trim();
@@ -78,7 +79,6 @@ public class Login extends AppCompatActivity {
 
         // Kiểm tra mật khẩu
         if (userDao.checkPassword(username, password)) {
-            // Lấy thông tin người dùng
             UserModel user = userDao.getProfileByUsername(username);
 
             if (user == null) {
@@ -86,34 +86,33 @@ public class Login extends AppCompatActivity {
                 return;
             }
 
-            // Kiểm tra trạng thái
             if (!user.isActive()) {
-                Toast.makeText(this, "Tài khoản đã hết hạn hợp đồng, không thể đăng nhập.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Tài khoản đã hết hạn hợp đồng, không thể đăng nhập!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             Toast.makeText(this, "Xin chào " + username + "!", Toast.LENGTH_SHORT).show();
 
+            // Lưu thông tin vào SharedPreferences
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            // Lưu trạng thái đăng nhập
-            editor.putBoolean(KEY_IS_LOGGED_IN, true);
-            // Lưu thông tin người dùng nếu chọn checkbox
-            if (remember.isChecked()) {
-                editor.putString(KEY_USERNAME, username);
-                editor.putBoolean(KEY_REMEMBER, true);
-            } else {
-                // Nếu không chọn checkbox, chỉ xóa thông tin tài khoản nhưng vẫn giữ trạng thái đăng nhập
-                editor.remove(KEY_USERNAME);
-                editor.putBoolean(KEY_REMEMBER, false);
-            }
+            editor.putBoolean(KEY_IS_LOGGED_IN, true); // Luôn lưu trạng thái đăng nhập
+            editor.putString(KEY_USERNAME, username); // Lưu tên người dùng cho các chức năng khác
+
+            // Lưu hoặc xóa thông tin ghi nhớ tài khoản dựa trên checkbox
+            // if (remember.isChecked()) {
+            //    editor.putBoolean(KEY_REMEMBER, true);
+            //} else {
+            //    editor.putBoolean(KEY_REMEMBER, false);
+            //}
+
             editor.apply();
 
-            // Chuyển đến Navigation và xóa ngăn xếp
+            // Chuyển đến Navigation
             Intent intent = new Intent(Login.this, Navigation.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         } else {
-            // Đăng nhập thất bại
             Toast.makeText(this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
         }
     }
