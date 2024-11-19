@@ -85,7 +85,6 @@ public class Profile extends Fragment {
         TextView txv_emailUser = view.findViewById(R.id.txv_emailUser);
         TextView txv_phoneNumberUser = view.findViewById(R.id.txv_phoneNumberUser);
         TextView txv_roleUser = view.findViewById(R.id.txv_roleUser);
-        TextView txv_statusUser = view.findViewById(R.id.txv_statusUser);
         Button btn_updateProfile = view.findViewById(R.id.btn_updateProfile);
 
         dbHelper = new DatabaseHelper(getActivity());
@@ -93,23 +92,22 @@ public class Profile extends Fragment {
         userDao = new UserDao(db);
 
         // Tải thông tin profile vào giao diện
-        uploadProfile(imageProfile, txv_idUser, txv_nameUser, txv_emailUser, txv_phoneNumberUser, txv_roleUser, txv_statusUser);
+        uploadProfile(imageProfile, txv_idUser, txv_nameUser, txv_emailUser, txv_phoneNumberUser, txv_roleUser);
 
         // Sự kiện nhấn nút "Cập nhật"
-        btn_updateProfile.setOnClickListener(v -> dialogUpdateProfile(txv_idUser, txv_nameUser, txv_emailUser, txv_phoneNumberUser, txv_roleUser, txv_statusUser));
+        btn_updateProfile.setOnClickListener(v -> dialogUpdateProfile(txv_idUser, txv_nameUser, txv_emailUser, txv_phoneNumberUser, txv_roleUser));
 
         return view;
     }
 
-    private void uploadProfile(ImageView imageProfile, TextView txv_idUser, TextView txv_nameUser, TextView txv_emailUser, TextView txv_phoneNumberUser, TextView txv_roleUser, TextView txv_statusUser) {
+    private void uploadProfile(ImageView imageProfile, TextView txv_idUser, TextView txv_nameUser, TextView txv_emailUser, TextView txv_phoneNumberUser, TextView txv_roleUser) {
         userModel = userDao.getProfileByUsername(username);
         if (userModel != null) {
             txv_idUser.setText(String.valueOf(userModel.getId()));
             txv_nameUser.setText(userModel.getName());
             txv_emailUser.setText(userModel.getEmail());
             txv_phoneNumberUser.setText(userModel.getPhoneNumber());
-            txv_roleUser.setText(userModel.isAdmin() ? "Quản trị viên" : "Nhân viên");
-            // txv_statusUser.setText(userModel.isActive() ? "Còn làm việc" : "Đã nghỉ việc");
+            txv_roleUser.setText(userModel.getRole());
 
             if (userModel.getImage() != null) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(userModel.getImage(), 0, userModel.getImage().length);
@@ -141,8 +139,7 @@ public class Profile extends Fragment {
     }
 
 
-
-    private void dialogUpdateProfile(TextView txvIdUser, TextView txvNameUser, TextView txvEmailUser, TextView txvPhoneNumberUser, TextView txvRoleUser, TextView txvStatusUser) {
+    private void dialogUpdateProfile(TextView txvIdUser, TextView txvNameUser, TextView txvEmailUser, TextView txvPhoneNumberUser, TextView txvRoleUser) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_update_profile, null);
         builder.setView(view);
@@ -182,11 +179,12 @@ public class Profile extends Fragment {
 
         // Sự kiện nút lưu
         btn_saveProfile.setOnClickListener(v -> {
-            String name = edt_updateName.getText().toString();
-            String email = edt_updateEmail.getText().toString();
-            String phoneNumber = edt_updatePhoneNumber.getText().toString();
+            String name = edt_updateName.getText().toString().trim();
+            String email = edt_updateEmail.getText().toString().trim();
+            String phoneNumber = edt_updatePhoneNumber.getText().toString().trim();
 
-            if (name.trim().isEmpty()) {
+            // Kiểm tra dữ liệu hợp lệ
+            if (name.isEmpty()) {
                 edt_updateName.setError("Tên không được để trống");
                 return;
             }
@@ -201,21 +199,34 @@ public class Profile extends Fragment {
                 return;
             }
 
+            // Kiểm tra trùng lặp email và số điện thoại
+            if (userDao.isEmailExists(email) && !email.equals(userModel.getEmail())) {
+                edt_updateEmail.setError("Email này đã được sử dụng bởi người dùng khác");
+                return;
+            }
+
+            if (userDao.isPhoneNumberExists(phoneNumber) && !phoneNumber.equals(userModel.getPhoneNumber())) {
+                edt_updatePhoneNumber.setError("Số điện thoại này đã được sử dụng bởi người dùng khác");
+                return;
+            }
+
+            // Cập nhật thông tin nếu hợp lệ
             userModel.setName(name);
             userModel.setEmail(email);
             userModel.setPhoneNumber(phoneNumber);
 
+            // Lưu ảnh nếu có thay đổi
             if (selectedImageBitmap != null) {
                 saveImageToDatabase(selectedImageBitmap);
-
-                // Cập nhật ảnh trong ImageView của Fragment sau khi lưu
-                imageProfile.setImageBitmap(selectedImageBitmap);
+                imageProfile.setImageBitmap(selectedImageBitmap); // Cập nhật ảnh hiển thị
             }
 
+            // Cập nhật thông tin vào database
             userDao.updateUserProfile(userModel);
-            uploadProfile(imageProfile, txvIdUser, txvNameUser, txvEmailUser, txvPhoneNumberUser, txvRoleUser, txvStatusUser);
+            uploadProfile(imageProfile, txvIdUser, txvNameUser, txvEmailUser, txvPhoneNumberUser, txvRoleUser);
 
-            dialog.dismiss();
+            dialog.dismiss(); // Đóng dialog sau khi lưu
         });
+
     }
 }

@@ -76,14 +76,21 @@ public class Login extends AppCompatActivity {
             return;
         }
 
-        // Tạo đối tượng User với thông tin đăng nhập
-        UserModel user = new UserModel();
-        user.setUsername(username);
-        user.setPassword(password);
-
         // Kiểm tra mật khẩu
-        if (userDao.checkPassword(user)) {
-            // Đăng nhập thành công
+        if (userDao.checkPassword(username, password)) {
+            // Lấy thông tin người dùng
+            UserModel user = userDao.getProfileByUsername(username);
+
+            if (user == null) {
+                Toast.makeText(this, "Người dùng không tồn tại!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Kiểm tra trạng thái
+            if (!user.isActive()) {
+                Toast.makeText(this, "Tài khoản đã hết hạn hợp đồng, không thể đăng nhập.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             Toast.makeText(this, "Xin chào " + username + "!", Toast.LENGTH_SHORT).show();
 
             SharedPreferences.Editor editor = sharedPreferences.edit();

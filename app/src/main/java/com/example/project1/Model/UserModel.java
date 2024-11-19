@@ -10,12 +10,13 @@ public class UserModel {
     private String phoneNumber;
     private boolean isAdmin;
     private boolean isActive;
+    private String securityLock;
 
     public UserModel() {
     }
 
     // Constructor không có ảnh (cho trường hợp chưa có ảnh)
-    public UserModel(int id, String username, String password, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive) {
+    public UserModel(int id, String username, String password, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive, String securityLock) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -24,10 +25,11 @@ public class UserModel {
         this.phoneNumber = phoneNumber;
         this.isAdmin = isAdmin;
         this.isActive = isActive;
+        this.securityLock = securityLock;
     }
 
     // Constructor có ảnh
-    public UserModel(int id, String username, String password, byte[] image, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive) {
+    public UserModel(int id, String username, String password, byte[] image, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive, String securityLock) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -37,6 +39,7 @@ public class UserModel {
         this.phoneNumber = phoneNumber;
         this.isAdmin = isAdmin;
         this.isActive = isActive;
+        this.securityLock = securityLock;
     }
 
     // Getters và setters cho các thuộc tính
@@ -116,4 +119,15 @@ public class UserModel {
         return this.isActive ? "Còn hạn hợp đồng" : "Đã hết hạn hợp đồng";
     }
 
+    public String getRole() {
+        return this.isAdmin ? "Quản trị viên" : "Nhân viên";
+    }
+
+    public String getSecurityLock() {
+        return securityLock;
+    }
+
+    public void setSecurityLock(String securityLock) {
+        this.securityLock = securityLock;
+    }
 }

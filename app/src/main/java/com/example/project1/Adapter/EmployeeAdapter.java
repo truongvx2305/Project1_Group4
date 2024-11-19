@@ -2,15 +2,24 @@ package com.example.project1.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.project1.DB.DatabaseHelper;
+import com.example.project1.Dao.UserDao;
 import com.example.project1.Model.UserModel;
 import com.example.project1.R;
 
@@ -48,9 +57,7 @@ public class EmployeeAdapter extends BaseAdapter {
         }
 
         ImageView imgEmployee = convertView.findViewById(R.id.imgEmployee);
-        TextView idEmployee = convertView.findViewById(R.id.idEmployee);
         TextView nameEmployee = convertView.findViewById(R.id.nameEmployee);
-        TextView emailEmployee = convertView.findViewById(R.id.emailEmployee);
         TextView phoneEmployee = convertView.findViewById(R.id.phoneEmployee);
         TextView statusEmployee = convertView.findViewById(R.id.statusEmployee);
 
@@ -65,12 +72,138 @@ public class EmployeeAdapter extends BaseAdapter {
             imgEmployee.setImageResource(R.drawable.user2); // Ảnh mặc định
         }
 
-        idEmployee.setText("Mã nhân viên: " + employee.getId());
         nameEmployee.setText("Họ tên: " + employee.getName());
-        emailEmployee.setText("Email: " + employee.getEmail());
         phoneEmployee.setText("SĐT: " + employee.getPhoneNumber());
         statusEmployee.setText("Trạng thái: " + employee.getActiveStatus());
 
+        // Thêm sự kiện click
+        convertView.setOnClickListener(v -> showOptionsDialog(employee));
+
         return convertView;
+    }
+
+    // Hiển thị Dialog chọn hành động
+    private void showOptionsDialog(UserModel employee) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(new String[]{"Tài khoản & mật khẩu", "Thông tin chi tiết"}, (dialog, which) -> {
+            if (which == 0) {
+                showAccountPassword(employee);
+            } else if (which == 1) {
+                showEmployeeDetailDialog(employee);
+            }
+        });
+        builder.create().show();
+    }
+
+    // Hiển thị chi tiết nhân viên
+    // Hiển thị chi tiết nhân viên
+    @SuppressLint("SetTextI18n")
+    private void showEmployeeDetailDialog(UserModel employee) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_employee_detail, null);
+        builder.setView(dialogView);
+
+        TextView idEmployeeDetail = dialogView.findViewById(R.id.idEmployeeDetail);
+        TextView nameEmployeeDetail = dialogView.findViewById(R.id.nameEmployeeDetail);
+        TextView emailEmployeeDetail = dialogView.findViewById(R.id.emailEmployeeDetail);
+        TextView phoneEmployeeDetail = dialogView.findViewById(R.id.phoneEmployeeDetail);
+        TextView roleEmployeeDetail = dialogView.findViewById(R.id.roleEmployeeDetail);
+        ImageView imgEmployeeDetail = dialogView.findViewById(R.id.imgEmployeeDetail);
+        Spinner statusEmployeeDetail = dialogView.findViewById(R.id.statusEmployeeDetail);
+
+        // Đổ dữ liệu
+        idEmployeeDetail.setText("Mã nhân viên: " + employee.getId());
+        nameEmployeeDetail.setText("Họ và tên: " + employee.getName());
+        emailEmployeeDetail.setText("Email: " + employee.getEmail());
+        phoneEmployeeDetail.setText("Số điện thoại: " + employee.getPhoneNumber());
+        roleEmployeeDetail.setText("Chức vụ: " + employee.getRole());
+
+        // Set image (nếu có)
+        byte[] imageBytes = employee.getImage();
+        if (imageBytes != null) {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+            imgEmployeeDetail.setImageBitmap(bitmap);
+        } else {
+            imgEmployeeDetail.setImageResource(R.drawable.user2); // Ảnh mặc định
+        }
+
+        // Cập nhật Spinner với danh sách trạng thái
+        String[] statuses = {"Còn hạn hợp đồng", "Đã hết hạn hợp đồng"};
+        ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, statuses);
+        statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        statusEmployeeDetail.setAdapter(statusAdapter);
+
+        // Chọn trạng thái theo thông tin của nhân viên
+        if (employee.isActive()) {
+            statusEmployeeDetail.setSelection(0); // "Còn hạn hợp đồng"
+        } else {
+            statusEmployeeDetail.setSelection(1); // "Đã hết hạn hợp đồng"
+        }
+
+        builder.setPositiveButton("Lưu", (dialog, which) -> {
+            // Lấy trạng thái mới từ Spinner
+            boolean newStatus = statusEmployeeDetail.getSelectedItemPosition() == 0; // Nếu chọn "Còn hạn hợp đồng"
+
+            // Cập nhật trạng thái mới cho nhân viên
+            DatabaseHelper dbHelper = new DatabaseHelper(context);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            UserDao userDao = new UserDao(db);
+            boolean isUpdated = userDao.updateEmployeeStatus(employee.getId(), newStatus);
+
+            if (isUpdated) {
+                // Cập nhật trạng thái trong list
+                employee.setActive(newStatus);
+
+                // Cập nhật giao diện (notifyDataSetChanged để Adapter cập nhật)
+                notifyDataSetChanged();
+            }
+        });
+
+        builder.setNegativeButton("Đóng", (dialog, which) -> dialog.dismiss());
+
+        builder.create().show();
+    }
+
+    // Hiển thị tài khoản và mật khẩu
+    @SuppressLint("SetTextI18n")
+    private void showAccountPassword(UserModel employee) {
+        // Tạo dialog từ layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_security_code, null);
+        builder.setView(dialogView);
+
+        EditText securityCodeDialog = dialogView.findViewById(R.id.edt_securityCodeDialog);
+        TextView SecurityMessageDialog = dialogView.findViewById(R.id.securityMessageDialog);
+        Button btnSubmit = dialogView.findViewById(R.id.btn_submitSecurity);
+
+        AlertDialog dialog = builder.create();
+
+        btnSubmit.setOnClickListener(v -> {
+            String securityCode = securityCodeDialog.getText().toString().trim();
+
+            if (securityCode.isEmpty()) {
+                SecurityMessageDialog.setText("Vui lòng nhập mã bảo mật!");
+                SecurityMessageDialog.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+                return;
+            }
+
+            // Kiểm tra mã bảo mật
+            UserDao userDao = new UserDao(new DatabaseHelper(context).getReadableDatabase());
+            if (userDao.checkSecurityLock(employee.getUsername(), securityCode)) {
+                dialog.dismiss();
+
+                // Hiển thị thông tin tài khoản và mật khẩu
+                AlertDialog.Builder accountDialogBuilder = new AlertDialog.Builder(context);
+                accountDialogBuilder.setTitle("Tài khoản & mật khẩu");
+                accountDialogBuilder.setMessage("Tên đăng nhập: " + employee.getUsername() + "\nMật khẩu: " + employee.getPassword());
+                accountDialogBuilder.setPositiveButton("Đóng", (d, which) -> d.dismiss());
+                accountDialogBuilder.create().show();
+            } else {
+                SecurityMessageDialog.setText("Mã bảo mật không đúng!");
+                SecurityMessageDialog.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+            }
+        });
+
+        dialog.show();
     }
 }

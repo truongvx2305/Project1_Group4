@@ -105,6 +105,11 @@
                         android:title="Thông tin cá nhân"
                         tools:ignore="HardcodedText" />
                     <item
+                        android:id="@+id/item_security"
+                        android:icon="@drawable/lock"
+                        android:title="Khóa bảo mật"
+                        tools:ignore="HardcodedText" />
+                    <item
                         android:id="@+id/item_logout"
                         android:icon="@drawable/logout"
                         android:title="Đăng xuất"

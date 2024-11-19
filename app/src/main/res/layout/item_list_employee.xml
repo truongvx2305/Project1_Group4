@@ -6,17 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp"
-        tools:ignore="UselessParent">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="10dp">
+            android:paddingBottom="10dp"
+            tools:ignore="UselessParent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,33 +44,12 @@
                     tools:ignore="RtlSymmetry">
 
                     <TextView
-                        android:id="@+id/idEmployee"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/font"
-                        android:text="Mã nhân viên"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        tools:ignore="HardcodedText" />
-
-                    <TextView
                         android:id="@+id/nameEmployee"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:fontFamily="@font/font"
                         android:text="Họ và tên"
-                        android:textColor="#000000"
-                        android:textSize="14sp"
-                        tools:ignore="HardcodedText" />
-
-                    <TextView
-                        android:id="@+id/emailEmployee"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/font"
-                        android:text="Email"
                         android:textColor="#000000"
                         android:textSize="14sp"
                         tools:ignore="HardcodedText" />
@@ -106,6 +80,5 @@
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
 
 </LinearLayout>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/securityCodeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/securityMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:text="Tạo - đổi khóa bảo mật"
+        android:textSize="20sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_securityCode1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:hint="Mã bảo mật 1"
+        android:inputType="numberPassword"
+        android:padding="8dp"
+        tools:ignore="Autofill,HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_SecurityCode2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/font"
+        android:hint="Mã bảo mật 2"
+        android:inputType="numberPassword"
+        android:padding="8dp"
+        tools:ignore="Autofill,HardcodedText" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_updateSecurity"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/blue"
+            android:fontFamily="@font/font"
+            android:text="Cập nhật"
+            tools:ignore="ButtonStyle,HardcodedText" />
+
+        <Button
+            android:id="@+id/btn_addSecurity"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/blue"
+            android:fontFamily="@font/font"
+            android:text="Tạo khóa"
+            tools:ignore="ButtonStyle,HardcodedText" />
+    </LinearLayout>
+</LinearLayout>

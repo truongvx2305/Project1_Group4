@@ -16,6 +16,8 @@ public class UserDao {
         this.db = db;
     }
 
+    // 1. Thêm, xóa và cập nhật thông tin người dùng
+
     // Thêm tài khoản
     public boolean insert(UserModel user) {
         ContentValues values = new ContentValues();
@@ -25,10 +27,11 @@ public class UserDao {
         values.put("Name", user.getName());
         values.put("Email", user.getEmail());
         values.put("Phone_Number", user.getPhoneNumber());
-        values.put("isAdmin", user.isAdmin() ? 1 : 0); // Lưu giá trị boolean dưới dạng 1 hoặc 0
-        values.put("isActive", user.isActive() ? 1 : 0); // Lưu giá trị boolean dưới dạng 1 hoặc 0
+        values.put("isAdmin", user.isAdmin() ? 1 : 0);
+        values.put("isActive", user.isActive() ? 1 : 0);
+        values.put("Security_Lock", user.getSecurityLock()); // Thêm Security Lock
 
-        long result = db.insert("user", null, values); // Chú ý tên bảng "user" (chữ thường)
+        long result = db.insert("user", null, values);
         return result != -1;
     }
 
@@ -40,12 +43,25 @@ public class UserDao {
         return result > 0;
     }
 
+    // Cập nhật trạng thái của nhân viên (isActive)
+    public boolean updateEmployeeStatus(int userId, boolean isActive) {
+        ContentValues values = new ContentValues();
+        values.put("isActive", isActive ? 1 : 0);
+        int result = db.update("user", values, "ID_User = ?", new String[]{String.valueOf(userId)});
+        return result > 0;
+    }
+
+    public boolean updateSecurityLock(String username, String newLock) {
+        ContentValues values = new ContentValues();
+        values.put("Security_Lock", newLock);
+        int result = db.update("user", values, "Username = ?", new String[]{username});
+        return result > 0;
+    }
+
     // Cập nhật thông tin người dùng
     public void updateUserProfile(UserModel user) {
         ContentValues values = new ContentValues();
-        values.put("Username", user.getUsername());
-        values.put("Password", user.getPassword());
-        if (user.getImage() != null) { // Chỉ cập nhật ảnh nếu không phải null
+        if (user.getImage() != null) {
             values.put("Image", user.getImage());
         }
         values.put("Name", user.getName());
@@ -58,23 +74,24 @@ public class UserDao {
     }
 
     // Xóa tài khoản
-    public boolean delete(UserModel user) {
-        int result = db.delete("user", "Username = ?", new String[]{user.getUsername()});
+    public boolean delete(String username) {
+        int result = db.delete("user", "Username = ?", new String[]{username});
         return result > 0;
     }
 
+    // 2. Các phương thức kiểm tra dữ liệu
+
     // Kiểm tra Username
-    public boolean checkUsername(UserModel user) {
-        Cursor cursor = db.rawQuery("SELECT * FROM user WHERE Username = ?", new String[]{user.getUsername()});
+    public boolean checkUsername(String username) {
+        Cursor cursor = db.rawQuery("SELECT * FROM user WHERE Username = ?", new String[]{username});
         boolean exists = cursor.moveToFirst();
         cursor.close();
         return exists;
     }
 
     // Kiểm tra Password
-    public boolean checkPassword(UserModel user) {
-        Cursor cursor = db.rawQuery("SELECT 1 FROM user WHERE Username = ? AND Password = ?",
-                new String[]{user.getUsername(), user.getPassword()});
+    public boolean checkPassword(String username, String password) {
+        Cursor cursor = db.rawQuery("SELECT 1 FROM user WHERE Username = ? AND Password = ?", new String[]{username, password});
         boolean exists = cursor.moveToFirst();
         cursor.close();
         return exists;
@@ -82,12 +99,47 @@ public class UserDao {
 
     // Kiểm tra Role
     public boolean checkRole(UserModel user) {
-        Cursor cursor = db.rawQuery("SELECT 1 FROM user WHERE Username = ? AND isAdmin = ?",
-                new String[]{user.getUsername(), user.isAdmin() ? "1" : "0"});
+        Cursor cursor = db.rawQuery("SELECT 1 FROM user WHERE Username = ? AND isAdmin = ?", new String[]{user.getUsername(), user.isAdmin() ? "1" : "0"});
         boolean exists = cursor.moveToFirst();
         cursor.close();
         return exists;
     }
+
+    public boolean checkSecurityLock(String username, String securityLock) {
+        Cursor cursor = db.rawQuery("SELECT 1 FROM user WHERE Username = ? AND Security_Lock = ?",
+                new String[]{username, securityLock});
+        boolean exists = cursor.moveToFirst();
+        cursor.close();
+        return exists;
+    }
+
+    // Kiểm tra email đã tồn tại
+    public boolean isEmailExists(String email) {
+        String query = "SELECT COUNT(*) FROM user WHERE email = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{email});
+        if (cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            cursor.close();
+            return count > 0;
+        }
+        cursor.close();
+        return false;
+    }
+
+    // Kiểm tra số điện thoại đã tồn tại
+    public boolean isPhoneNumberExists(String phoneNumber) {
+        String query = "SELECT COUNT(*) FROM user WHERE phone_number = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{phoneNumber});
+        if (cursor.moveToFirst()) {
+            int count = cursor.getInt(0);
+            cursor.close();
+            return count > 0;
+        }
+        cursor.close();
+        return false;
+    }
+
+    // 3. Các phương thức lấy thông tin người dùng
 
     // Lấy thông tin người dùng từ database
     public UserModel getProfileByUsername(String username) {
@@ -101,19 +153,19 @@ public class UserDao {
             String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("Phone_Number"));
             boolean isAdmin = cursor.getInt(cursor.getColumnIndexOrThrow("isAdmin")) == 1;
             boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow("isActive")) == 1;
+            String securityLock = cursor.getString(cursor.getColumnIndexOrThrow("Security_Lock"));
 
             cursor.close();
-            return new UserModel(id, username, password, image, name, email, phoneNumber, isAdmin, isActive);
+            return new UserModel(id, username, password, image, name, email, phoneNumber, isAdmin, isActive, securityLock);
         }
         cursor.close();
         return null;
     }
 
+    // Lấy tất cả nhân viên (không phải Admin)
     public List<UserModel> getAllEmployees() {
         List<UserModel> employees = new ArrayList<>();
-        // Thêm điều kiện WHERE để chỉ lấy những người dùng không phải Admin
         Cursor cursor = db.rawQuery("SELECT * FROM user WHERE isAdmin = 0", null);
-
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_User"));
@@ -125,12 +177,12 @@ public class UserDao {
                 String phoneNumber = cursor.getString(cursor.getColumnIndexOrThrow("Phone_Number"));
                 boolean isAdmin = cursor.getInt(cursor.getColumnIndexOrThrow("isAdmin")) == 1;
                 boolean isActive = cursor.getInt(cursor.getColumnIndexOrThrow("isActive")) == 1;
+                String securityLock = cursor.getString(cursor.getColumnIndexOrThrow("Security_Lock"));
 
-                UserModel employee = new UserModel(id, username, password, image, name, email, phoneNumber, isAdmin, isActive);
+                UserModel employee = new UserModel(id, username, password, image, name, email, phoneNumber, isAdmin, isActive, securityLock);
                 employees.add(employee);
             } while (cursor.moveToNext());
         }
-
         cursor.close();
         return employees;
     }
@@ -144,7 +196,7 @@ public class UserDao {
             return image;
         }
         cursor.close();
-        return null; // Trả về null nếu không tìm thấy ảnh
+        return null;
     }
 
     // Lấy email theo tên người dùng
@@ -156,6 +208,17 @@ public class UserDao {
             return email;
         }
         if (cursor != null) cursor.close();
+        return null;
+    }
+
+    public String getSecurityLock(String username) {
+        Cursor cursor = db.rawQuery("SELECT Security_Lock FROM user WHERE Username = ?", new String[]{username});
+        if (cursor.moveToFirst()) {
+            String lock = cursor.getString(cursor.getColumnIndexOrThrow("Security_Lock"));
+            cursor.close();
+            return lock;
+        }
+        cursor.close();
         return null;
     }
 }

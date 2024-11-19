@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/securityCodeDialog"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/securityMessageDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:gravity="center"
+        android:paddingBottom="8dp"
+        android:text="Nhập mã bảo mật để tiếp tục:"
+        android:textSize="16sp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/edt_securityCodeDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font"
+        android:hint="Mã bảo mật"
+        android:inputType="numberPassword"
+        android:padding="8dp"
+        tools:ignore="Autofill,HardcodedText" />
+
+    <Button
+        android:id="@+id/btn_submitSecurity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/blue"
+        android:fontFamily="@font/font"
+        android:text="Xác nhận"
+        tools:ignore="HardcodedText" />
+</LinearLayout>
