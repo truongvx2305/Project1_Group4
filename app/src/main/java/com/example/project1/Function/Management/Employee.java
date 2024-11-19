@@ -83,19 +83,30 @@ public class Employee extends Fragment {
             popupMenu.setOnMenuItemClickListener(item -> {
                 int itemId = item.getItemId();
 
-                if (currentFilterStatus != null && currentFilterStatus == itemId) {
-                    // Nếu nhấn lại trạng thái đã chọn -> hủy lọc
+                if (itemId == R.id.filter_clear) {
+                    // Xóa bộ lọc
                     currentFilterStatus = null;
-                    filterEmployeesAndStatus(searchEmployee.getText().toString(), null); // Reset trạng thái
+                    filterEmployeesAndStatus(searchEmployee.getText().toString(), null);
+
+                    // Reset trạng thái chọn cho tất cả mục
+                    popupMenu.getMenu().findItem(R.id.filter_active).setChecked(false);
+                    popupMenu.getMenu().findItem(R.id.filter_inactive).setChecked(false);
                 } else {
-                    // Áp dụng trạng thái mới
+                    // Đặt trạng thái mới
                     currentFilterStatus = itemId;
+
+                    // Áp dụng lọc trạng thái
                     if (itemId == R.id.filter_active) {
                         filterEmployeesAndStatus(searchEmployee.getText().toString(), R.id.filter_active);
                     } else if (itemId == R.id.filter_inactive) {
                         filterEmployeesAndStatus(searchEmployee.getText().toString(), R.id.filter_inactive);
                     }
+
+                    // Đặt tick trạng thái được chọn, bỏ tick trạng thái khác
+                    popupMenu.getMenu().findItem(R.id.filter_active).setChecked(itemId == R.id.filter_active);
+                    popupMenu.getMenu().findItem(R.id.filter_inactive).setChecked(itemId == R.id.filter_inactive);
                 }
+
                 return true;
             });
 

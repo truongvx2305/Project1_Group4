@@ -60,6 +60,10 @@ public class Navigation extends AppCompatActivity {
             username = sharedPreferences.getString(KEY_USERNAME, null);
         }
 
+        // Log trạng thái đăng nhập
+        Log.d("Navigation", "Username: " + username);
+        Log.d("Navigation", "Is Logged In: " + sharedPreferences.getBoolean(KEY_IS_LOGGED_IN, false));
+
         // Khởi tạo DatabaseHelper và UserDao
         dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
@@ -134,10 +138,21 @@ public class Navigation extends AppCompatActivity {
 
     // Kiểm tra vai trò người dùng và ẩn các chức năng không được dùng phía nhân viên
     private void checkRole() {
-        // Kiểm tra vai trò người dùng
+        if (username == null) {
+            Log.e("Navigation", "Username không tồn tại trong SharedPreferences!");
+            return;
+        }
+
+        Log.d("Navigation", "Kiểm tra vai trò cho username: " + username);
+
         UserModel user = userDao.getProfileByUsername(username);
-        if (user != null && !user.isAdmin()) {
-            // Danh sách các mục cần ẩn cho nhân viên
+        if (user == null) {
+            Log.e("Navigation", "Không tìm thấy thông tin người dùng trong database cho username: " + username);
+            return;
+        }
+
+        if (!user.isAdmin()) {
+            Log.d("Navigation", "Người dùng không phải là admin. Ẩn các mục dành cho admin.");
             int[] restrictedItems = {
                     R.id.item_view_product,
                     R.id.item_product_management,
@@ -145,16 +160,16 @@ public class Navigation extends AppCompatActivity {
                     R.id.item_employee_management,
                     R.id.item_report_statistics
             };
-
-            // Ẩn tất cả mục trong danh sách
             for (int itemId : restrictedItems) {
                 MenuItem item = navigationView.getMenu().findItem(itemId);
                 if (item != null) {
                     item.setVisible(false);
+                } else {
+                    Log.e("Navigation", "Không tìm thấy mục: " + itemId);
                 }
             }
         } else {
-            Log.e("Navigation", "Không tìm thấy người dùng!");
+            Log.d("Navigation", "Người dùng là admin. Hiển thị đầy đủ quyền.");
         }
     }
 
@@ -176,7 +191,6 @@ public class Navigation extends AppCompatActivity {
             title = "Trang chủ";
         } else if (itemId == R.id.item_employee_management) {
             fragment = new Employee();
-            // ((Employee) fragment).setUsername(username);
             title = "Quản lý nhân viên";
         } else if (itemId == R.id.item_profile) {
             fragment = new Profile();
@@ -211,10 +225,9 @@ public class Navigation extends AppCompatActivity {
 
     private void logout() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(KEY_IS_LOGGED_IN, false);
+        editor.clear(); // Xóa toàn bộ dữ liệu trong SharedPreferences
         editor.apply();
 
-        // Chuyển đến màn hình đăng nhập
         Toast.makeText(this, "Đăng xuất thành công!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Navigation.this, Login.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
