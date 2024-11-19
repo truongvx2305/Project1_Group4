@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item
+        android:id="@+id/item_filterStatus"
+        android:title="Trạng thái"
+        tools:ignore="HardcodedText">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/filter_active"
+                    android:title="Còn hạn hợp đồng"
+                    tools:ignore="HardcodedText" />
+                <item
+                    android:id="@+id/filter_inactive"
+                    android:title="Hết hạn hợp đồng"
+                    tools:ignore="HardcodedText" />
+            </group>
+        </menu>
+    </item>
+</menu>

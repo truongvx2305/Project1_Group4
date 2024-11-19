@@ -176,7 +176,7 @@ public class Navigation extends AppCompatActivity {
             title = "Trang chủ";
         } else if (itemId == R.id.item_employee_management) {
             fragment = new Employee();
-            ((Employee) fragment).setUsername(username);
+            // ((Employee) fragment).setUsername(username);
             title = "Quản lý nhân viên";
         } else if (itemId == R.id.item_profile) {
             fragment = new Profile();

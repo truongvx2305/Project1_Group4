@@ -6,11 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-    public static final String DATABASE_NAME = "project1.db";
+    public static final String DATABASE_NAME = "project1_group4.db";
     public static final String userTable = "user";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 4);
+        super(context, DATABASE_NAME, null, 1);
     }
 
     @Override
@@ -25,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertAdmin(db);
         // Chèn dữ liệu nhân viên mẫu
         insertEmployee(db);
+        insertEmployee2(db);
     }
 
     @Override
@@ -80,5 +81,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         employeeUser.put("isActive", 1); // 1 cho true
 
         db.insert(userTable, null, employeeUser);
+    }
+
+    private void insertEmployee2(SQLiteDatabase db) {
+        ContentValues employeeUser2 = new ContentValues();
+        employeeUser2.put("Username", "Employee002");
+        employeeUser2.put("Password", "12345678");
+        employeeUser2.put("Name", "Employee002");
+        employeeUser2.put("Email", "Employee002@gmail.com");
+        employeeUser2.put("Phone_Number", "0896745231");
+        employeeUser2.put("isAdmin", 0); // 0 cho false
+        employeeUser2.put("isActive", 1); // 1 cho true
+
+        db.insert(userTable, null, employeeUser2);
     }
 }

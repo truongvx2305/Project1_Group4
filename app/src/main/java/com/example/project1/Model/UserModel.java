@@ -111,4 +111,9 @@ public class UserModel {
     public void setActive(boolean isActive) {
         this.isActive = isActive;
     }
+
+    public String getActiveStatus() {
+        return this.isActive ? "Còn hạn hợp đồng" : "Đã hết hạn hợp đồng";
+    }
+
 }

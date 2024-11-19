@@ -109,7 +109,7 @@ public class Profile extends Fragment {
             txv_emailUser.setText(userModel.getEmail());
             txv_phoneNumberUser.setText(userModel.getPhoneNumber());
             txv_roleUser.setText(userModel.isAdmin() ? "Quản trị viên" : "Nhân viên");
-            txv_statusUser.setText(userModel.isActive() ? "Còn làm việc" : "Đã nghỉ việc");
+            // txv_statusUser.setText(userModel.isActive() ? "Còn làm việc" : "Đã nghỉ việc");
 
             if (userModel.getImage() != null) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(userModel.getImage(), 0, userModel.getImage().length);

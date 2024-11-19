@@ -65,11 +65,11 @@ public class EmployeeAdapter extends BaseAdapter {
             imgEmployee.setImageResource(R.drawable.user2); // Ảnh mặc định
         }
 
-        idEmployee.setText("Mã: " + employee.getId());
+        idEmployee.setText("Mã nhân viên: " + employee.getId());
         nameEmployee.setText("Họ tên: " + employee.getName());
         emailEmployee.setText("Email: " + employee.getEmail());
         phoneEmployee.setText("SĐT: " + employee.getPhoneNumber());
-        statusEmployee.setText(employee.isActive() ? "Đang hoạt động" : "Ngừng hoạt động");
+        statusEmployee.setText("Trạng thái: " + employee.getActiveStatus());
 
         return convertView;
     }
