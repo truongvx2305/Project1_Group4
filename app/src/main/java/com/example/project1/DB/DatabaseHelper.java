@@ -9,6 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "project1_group4.db";
     public static final String userTable = "user";
     public static final String customerTable = "customer";
+    public static final String discountTable = "discount";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 5);
@@ -23,12 +24,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createUserTable(db);
         // Tạo bảng customer
         createCustomerTable(db);
+        // Tạo bảng discount
+        createDiscountTable(db);
 
         // Chèn dữ liệu admin mẫu
         insertAdmin(db);
         // Chèn dữ liệu nhân viên mẫu
         insertEmployee(db);
         insertEmployee2(db);
+        // Chèn dữ liệu khách hàng mẫu
+        insertCustomer(db);
+        // Chèn dữ liệu giảm giá mẫu
+        insertDiscount(db);
     }
 
     @Override
@@ -36,6 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Xóa bảng nếu tồn tại
         db.execSQL("DROP TABLE IF EXISTS " + userTable);
         db.execSQL("DROP TABLE IF EXISTS " + customerTable);
+        db.execSQL("DROP TABLE IF EXISTS " + discountTable);
 
         // Tạo lại bảng
         onCreate(db);
@@ -59,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Phone_Number TEXT UNIQUE, " +
                 "isAdmin INTEGER, " +
                 "isActive INTEGER, " +
-                "Security_Lock TEXT)"); // Thêm Security Lock
+                "Security_Lock TEXT)");
     }
 
     private void createCustomerTable(SQLiteDatabase db) {
@@ -67,6 +75,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID_Customer INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Name TEXT, " +
                 "Phone_Number TEXT UNIQUE)");
+    }
+
+    private void createDiscountTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + discountTable + " (" +
+                "ID_Discount INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Name TEXT, " +
+                "Discount_Price REAL, " +              // Giá trị giảm (vd: 10% = 0.1)
+                "Min_Order_Price REAL, " +             // Giá trị hóa đơn tối thiểu để áp dụng
+                "Start_Date TEXT, " +                  // Ngày bắt đầu
+                "End_Date TEXT)");                     // Ngày kết thúc
     }
 
     private void insertAdmin(SQLiteDatabase db) {
@@ -106,5 +124,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         employeeUser2.put("isActive", 1); // 1 cho true
 
         db.insert(userTable, null, employeeUser2);
+    }
+
+    private void insertCustomer(SQLiteDatabase db) {
+        ContentValues customer = new ContentValues();
+        customer.put("Name", "Customer001");
+        customer.put("Phone_Number", "0123456789");
+
+        db.insert(customerTable, null, customer);
+    }
+
+    private void insertDiscount(SQLiteDatabase db) {
+        ContentValues discount = new ContentValues();
+        discount.put("Name", "Discount001");
+        discount.put("Discount_Price", 0.1);
+        discount.put("Min_Order_Price", 1000000.0);
+        discount.put("Start_Date", "2024-11-21");
+        discount.put("End_Date", "2024-12-31");
+
+        db.insert(discountTable, null, discount);
     }
 }
