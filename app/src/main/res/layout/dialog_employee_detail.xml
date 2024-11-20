@@ -28,7 +28,7 @@
             <ImageView
                 android:id="@+id/imgEmployeeDetail"
                 android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_height="86dp"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="Profile Picture"
                 android:scaleType="centerCrop"

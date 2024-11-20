@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ import com.example.project1.Model.UserModel;
 import com.example.project1.Navigation;
 import com.example.project1.R;
 
+import java.util.Collections;
 import java.util.List;
 
 public class EmployeeAdapter extends BaseAdapter {
@@ -81,6 +83,16 @@ public class EmployeeAdapter extends BaseAdapter {
         nameEmployee.setText("Họ tên: " + employee.getName());
         phoneEmployee.setText("SĐT: " + employee.getPhoneNumber());
         statusEmployee.setText("Trạng thái: " + employee.getActiveStatus());
+
+        LinearLayout linearLayoutEmployee = convertView.findViewById(R.id.linearLayoutEmployee);
+        // Đổi màu nền theo trạng thái
+        if (employee.isActive()) {
+            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
+            imgEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
+        } else {
+            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray)); // Màu xám
+            imgEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray)); // Màu xám
+        }
 
         // Thêm sự kiện click
         convertView.setOnClickListener(v -> showOptionsDialog(employee));
@@ -159,6 +171,7 @@ public class EmployeeAdapter extends BaseAdapter {
             if (isUpdated) {
                 // Cập nhật trạng thái trong list
                 employee.setActive(newStatus);
+                sortEmployeeList();
 
                 // Cập nhật giao diện (notifyDataSetChanged để Adapter cập nhật)
                 notifyDataSetChanged();
@@ -251,5 +264,10 @@ public class EmployeeAdapter extends BaseAdapter {
         });
 
         dialog.show();
+    }
+
+    // Hàm sắp xếp danh sách (người còn hợp đồng trước)
+    private void sortEmployeeList() {
+        Collections.sort(employeeList, (e1, e2) -> Boolean.compare(e2.isActive(), e1.isActive()));
     }
 }

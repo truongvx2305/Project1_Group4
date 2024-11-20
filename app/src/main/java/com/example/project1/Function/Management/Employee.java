@@ -29,6 +29,7 @@ import com.example.project1.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Employee extends Fragment {
@@ -56,6 +57,10 @@ public class Employee extends Fragment {
 
         // Lấy danh sách nhân viên từ database
         employeeList = userDao.getAllEmployees();
+
+
+        // Sắp xếp danh sách ban đầu (người còn hợp đồng trước)
+        sortEmployeeList();
 
         // Gán adapter cho ListView
         listEmployee = view.findViewById(R.id.listEmployee);
@@ -163,6 +168,11 @@ public class Employee extends Fragment {
         popupMenu.show();
     }
 
+    // Hàm sắp xếp danh sách (người còn hợp đồng trước)
+    private void sortEmployeeList() {
+        Collections.sort(employeeList, (e1, e2) -> Boolean.compare(e2.isActive(), e1.isActive()));
+    }
+
     private void showDialogAddEmployee() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -211,6 +221,7 @@ public class Employee extends Fragment {
                 if (isInserted) {
                     // Cập nhật danh sách hiển thị
                     employeeList.add(newEmployee);
+                    sortEmployeeList();
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(), "Thêm nhân viên thành công", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
@@ -222,5 +233,4 @@ public class Employee extends Fragment {
 
         dialog.show();
     }
-
 }
