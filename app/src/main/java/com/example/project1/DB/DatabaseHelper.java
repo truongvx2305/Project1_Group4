@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "project1_group4.db";
     public static final String userTable = "user";
+    public static final String customerTable = "customer";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 5);
@@ -20,6 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Tạo bảng user
         createUserTable(db);
+        // Tạo bảng customer
+        createCustomerTable(db);
 
         // Chèn dữ liệu admin mẫu
         insertAdmin(db);
@@ -32,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Xóa bảng nếu tồn tại
         db.execSQL("DROP TABLE IF EXISTS " + userTable);
+        db.execSQL("DROP TABLE IF EXISTS " + customerTable);
 
         // Tạo lại bảng
         onCreate(db);
@@ -56,6 +60,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "isAdmin INTEGER, " +
                 "isActive INTEGER, " +
                 "Security_Lock TEXT)"); // Thêm Security Lock
+    }
+
+    private void createCustomerTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + customerTable + " (" +
+                "ID_Customer INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Name TEXT, " +
+                "Phone_Number TEXT UNIQUE)");
     }
 
     private void insertAdmin(SQLiteDatabase db) {
