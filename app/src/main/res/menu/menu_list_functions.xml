@@ -101,7 +101,7 @@
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/item_profile"
-                        android:icon="@drawable/use1"
+                        android:icon="@drawable/profile"
                         android:title="Thông tin cá nhân"
                         tools:ignore="HardcodedText" />
                     <item
