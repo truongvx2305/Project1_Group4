@@ -1,17 +1,17 @@
 package com.example.project1.Model;
 
 public class CustomerModel {
-      private int id;
-      private String name;
-      private String sdt;
+    private int id;
+    private String name;
+    private String phoneNumber;
 
     public CustomerModel() {
     }
 
-    public CustomerModel(int id, String name, String sdt) {
+    public CustomerModel(int id, String name, String phoneNumber) {
         this.id = id;
         this.name = name;
-        this.sdt = sdt;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getId() {
@@ -30,11 +30,11 @@ public class CustomerModel {
         this.name = name;
     }
 
-    public String getSdt() {
-        return sdt;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setSdt(String sdt) {
-        this.sdt = sdt;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
