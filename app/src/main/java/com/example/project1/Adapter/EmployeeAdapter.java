@@ -23,7 +23,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
-import com.example.project1.Function.SecurityCode;
+import com.example.project1.Function.SecurityLock;
 import com.example.project1.Model.UserModel;
 import com.example.project1.Navigation;
 import com.example.project1.R;
@@ -199,8 +199,8 @@ public class EmployeeAdapter extends BaseAdapter {
                 // Chuyển sang fragment thêm mã bảo mật
                 if (context instanceof Navigation) {
                     Navigation navigation = (Navigation) context;
-                    Fragment securityCodeFragment = new SecurityCode();
-                    ((SecurityCode) securityCodeFragment).setUsername(username); // Truyền username của người dùng đăng nhập
+                    Fragment securityCodeFragment = new SecurityLock();
+                    ((SecurityLock) securityCodeFragment).setUsername(username); // Truyền username của người dùng đăng nhập
                     navigation.loadFragment(securityCodeFragment, "Khóa bảo mật");
                 }
             });

@@ -52,12 +52,6 @@ public class Login extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
         userDao = new UserDao(db);
 
-        // Nếu đã chọn checkbox, tự động điền thông tin tài khoản
-        // if (sharedPreferences.getBoolean(KEY_REMEMBER, false)) {
-        //    edtUsername.setText(sharedPreferences.getString(KEY_USERNAME, ""));
-        //    remember.setChecked(true);
-        //}
-
         // Sự kiện khi nhấn nút đăng nhập
         btnLogin.setOnClickListener(v -> loginClick());
     }
@@ -68,11 +62,11 @@ public class Login extends AppCompatActivity {
         String username = edtUsername.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
-        if (TextUtils.isEmpty(username)) {
+        if (TextUtils.isEmpty(username.trim())) {
             edtUsername.setError("Vui lòng nhập tên tài khoản!");
             return;
         }
-        if (TextUtils.isEmpty(password)) {
+        if (TextUtils.isEmpty(password.trim())) {
             edtPassword.setError("Vui lòng nhập mật khẩu!");
             return;
         }
@@ -97,13 +91,6 @@ public class Login extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean(KEY_IS_LOGGED_IN, true); // Luôn lưu trạng thái đăng nhập
             editor.putString(KEY_USERNAME, username); // Lưu tên người dùng cho các chức năng khác
-
-            // Lưu hoặc xóa thông tin ghi nhớ tài khoản dựa trên checkbox
-            // if (remember.isChecked()) {
-            //    editor.putBoolean(KEY_REMEMBER, true);
-            //} else {
-            //    editor.putBoolean(KEY_REMEMBER, false);
-            //}
 
             editor.apply();
 

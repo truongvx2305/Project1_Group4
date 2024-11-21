@@ -27,7 +27,7 @@ import com.example.project1.Function.Home;
 import com.example.project1.Function.Login;
 import com.example.project1.Function.Management.Employee;
 import com.example.project1.Function.Profile;
-import com.example.project1.Function.SecurityCode;
+import com.example.project1.Function.SecurityLock;
 import com.example.project1.Model.UserModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -203,8 +203,8 @@ public class Navigation extends AppCompatActivity {
             ((Profile) fragment).setUsername(username);
             title = "Thông tin cá nhân";
         } else if (itemId == R.id.item_security) {
-            fragment = new SecurityCode();
-            ((SecurityCode) fragment).setUsername(username);
+            fragment = new SecurityLock();
+            ((SecurityLock) fragment).setUsername(username);
             title = "Khóa bảo mật";
         } else if (itemId == R.id.item_logout) {
             logout();

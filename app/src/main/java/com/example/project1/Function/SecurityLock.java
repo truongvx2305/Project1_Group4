@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,7 @@ import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
 import com.example.project1.R;
 
-public class SecurityCode extends Fragment {
+public class SecurityLock extends Fragment {
     private String username;
     private SQLiteDatabase db;
     private DatabaseHelper dbHelper;
@@ -32,7 +31,7 @@ public class SecurityCode extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.security_code, container, false);
+        View view = inflater.inflate(R.layout.security_lock, container, false);
 
         // Khởi tạo các thành phần giao diện
         EditText edtSecurityCode1 = view.findViewById(R.id.edt_securityCode1);

@@ -99,6 +99,10 @@ public class Employee extends Fragment {
 
     // Hàm kết hợp tìm kiếm và lọc trạng thái
     private void filterEmployeesAndStatus(String query, Integer statusFilter) {
+        if (query != null && query.trim().isEmpty()) {
+            query = ""; // Nếu chỉ nhập khoảng trắng, xem như không có tìm kiếm
+        }
+
         List<UserModel> filteredList = new ArrayList<>();
 
         for (UserModel employee : employeeList) {
@@ -170,7 +174,7 @@ public class Employee extends Fragment {
 
     // Hàm sắp xếp danh sách (người còn hợp đồng trước)
     private void sortEmployeeList() {
-        Collections.sort(employeeList, (e1, e2) -> Boolean.compare(e2.isActive(), e1.isActive()));
+        employeeList.sort((e1, e2) -> Boolean.compare(e2.isActive(), e1.isActive()));
     }
 
     private void showDialogAddEmployee() {
@@ -193,12 +197,39 @@ public class Employee extends Fragment {
                 String username = usernameAddEmployee.getText().toString().trim();
                 String password = passwordAddEmployee.getText().toString().trim();
 
-                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(getContext(), "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
+                // 1. Kiểm tra trống
+                if (TextUtils.isEmpty(username)) {
+                    usernameAddEmployee.setError("Vui lòng nhập tên tài khoản!");
+                    return;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    passwordAddEmployee.setError("Vui lòng nhập mật khẩu!");
                     return;
                 }
 
-                // Kiểm tra trùng lặp tên đăng nhập
+                // 2. Kiểm tra độ dài
+                if (username.length() < 5) {
+                    usernameAddEmployee.setError("Tên tài khoản phải có ít nhất 5 ký tự!");
+                    return;
+                }
+                if (password.length() < 8) {
+                    passwordAddEmployee.setError("Mật khẩu phải có ít nhất 8 ký tự!");
+                    return;
+                }
+
+                // 3. Kiểm tra định dạng tên đăng nhập (nếu là email hoặc không chứa ký tự đặc biệt)
+                if (!username.matches("^[a-zA-Z0-9._-]{5,}$")) {
+                    usernameAddEmployee.setError("Tên tài khoản chỉ được chứa chữ, số và ký tự ._-");
+                    return;
+                }
+
+                // 4. Kiểm tra mật khẩu mạnh (ít nhất 8 ký tự, có chữ hoa, chữ thường, số, ký tự đặc biệt)
+                if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,}$")) {
+                    passwordAddEmployee.setError("Mật khẩu phải chứa chữ hoa, chữ thường, số và ký tự đặc biệt!");
+                    return;
+                }
+
+                // 5. Kiểm tra trùng lặp tên đăng nhập
                 DatabaseHelper dbHelper = new DatabaseHelper(getContext());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 UserDao userDao = new UserDao(db);
