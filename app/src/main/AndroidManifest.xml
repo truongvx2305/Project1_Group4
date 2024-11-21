@@ -14,9 +14,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/main_screen_blue"
-        android:label="TCDQ"
-        android:roundIcon="@drawable/main_screen_blue"
+        android:icon="@drawable/tcdq2"
+        android:label="TCDQ Fashion"
+        android:roundIcon="@drawable/tcdq2"
         android:supportsRtl="true"
         android:theme="@style/Theme.Project1"
         tools:targetApi="31">
