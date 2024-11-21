@@ -32,13 +32,13 @@ public class CustomerDao {
         return false;
     }
 
-    // Xóa tài khoản
+    // Xóa khách hàng
     public boolean delete(String Customername) {
         int result = db.delete("customer", "Name = ?", new String[]{Customername});
         return result > 0;
     }
 
-    // Cập nhật thông tin người dùng
+    // Cập nhật thông tin khách hàng
     public boolean updateCusProfile(CustomerModel customer) {
         // Kiểm tra dữ liệu đầu vào
         if (customer == null || customer.getId() <= 0) {
