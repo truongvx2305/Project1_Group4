@@ -184,7 +184,6 @@ public class EmployeeAdapter extends BaseAdapter {
     }
 
     // Hiển thị tài khoản và mật khẩu
-    // Hiển thị tài khoản và mật khẩu
     @SuppressLint("SetTextI18n")
     private void showAccountPassword(UserModel employee) {
         // Kiểm tra xem người dùng đã có mã bảo mật chưa
