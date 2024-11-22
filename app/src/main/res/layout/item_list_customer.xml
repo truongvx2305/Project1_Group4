@@ -42,19 +42,33 @@
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:paddingStart="10dp"
-                android:paddingTop="10dp"
                 tools:ignore="RtlSymmetry">
 
-                <TextView
-                    android:id="@+id/nameCustomer"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:fontFamily="@font/font"
-                    android:text="Họ và tên"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <TextView
+                        android:id="@+id/nameCustomer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font"
+                        android:text="Họ và tên"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:id="@+id/vipCustomer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="100dp"
+                        android:src="@drawable/vip"
+                        tools:ignore="ContentDescription" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/phoneCustomer"
@@ -67,16 +81,31 @@
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/isVipCustomer"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:fontFamily="@font/font"
-                    android:text="isVIP?"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font"
+                        android:text="Khách hàng: "
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
+
+                    <TextView
+                        android:id="@+id/isVipCustomer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/font"
+                        android:text="VIP"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
 
             </LinearLayout>
         </LinearLayout>

@@ -50,6 +50,6 @@ public class CustomerModel {
     }
 
     public String getStatus() {
-        return this.isVIP ? "Khách hàng VIP" : "Khách hàng thường";
+        return this.isVIP ? "VIP" : "Phổ thông";
     }
 }

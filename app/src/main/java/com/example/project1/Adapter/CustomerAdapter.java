@@ -2,10 +2,12 @@ package com.example.project1.Adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.project1.Model.CustomerModel;
@@ -47,19 +49,15 @@ public class CustomerAdapter extends BaseAdapter {
         ViewHolder holder;
 
         if (convertView == null) {
-            // Inflate layout cho từng item
             convertView = LayoutInflater.from(context).inflate(R.layout.item_list_customer, parent, false);
 
-            // Khởi tạo ViewHolder
             holder = new ViewHolder();
             holder.cusName = convertView.findViewById(R.id.nameCustomer);
             holder.cusPhone = convertView.findViewById(R.id.phoneCustomer);
             holder.cusStatus = convertView.findViewById(R.id.isVipCustomer);
-
-            // Lưu ViewHolder vào View
+            holder.vipIcon = convertView.findViewById(R.id.vipCustomer); // Ánh xạ ImageView
             convertView.setTag(holder);
         } else {
-            // Lấy ViewHolder đã lưu từ View
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -72,8 +70,17 @@ public class CustomerAdapter extends BaseAdapter {
         // Đặt màu cho trạng thái
         int statusColor = customer.isVIP()
                 ? context.getResources().getColor(R.color.yellow) // Màu vàng
-                : context.getResources().getColor(R.color.white); // Màu đen
+                : context.getResources().getColor(R.color.black); // Màu đen
         holder.cusStatus.setTextColor(statusColor);
+
+        // Đặt màu cho src của ImageView
+        if (customer.isVIP()) {
+            // Nếu là VIP: đổi màu ảnh trong src thành vàng
+            holder.vipIcon.setColorFilter(context.getResources().getColor(R.color.yellow), PorterDuff.Mode.SRC_IN);
+        } else {
+            // Nếu không phải VIP: đổi màu ảnh trong src thành trắng
+            holder.vipIcon.setColorFilter(context.getResources().getColor(R.color.white), PorterDuff.Mode.SRC_IN);
+        }
 
         return convertView;
     }
@@ -83,6 +90,7 @@ public class CustomerAdapter extends BaseAdapter {
         TextView cusName;
         TextView cusPhone;
         TextView cusStatus;
+        ImageView vipIcon; // Thêm ImageView
     }
 }
 

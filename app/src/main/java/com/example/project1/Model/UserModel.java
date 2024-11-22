@@ -116,7 +116,7 @@ public class UserModel {
     }
 
     public String getActiveStatus() {
-        return this.isActive ? "Còn hạn hợp đồng" : "Đã hết hạn hợp đồng";
+        return this.isActive ? "Đi làm" : "Nghỉ làm";
     }
 
     public String getRole() {

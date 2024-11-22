@@ -90,8 +90,8 @@ public class EmployeeAdapter extends BaseAdapter {
             linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
             imgEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
         } else {
-            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray)); // Màu xám
-            imgEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.darker_gray)); // Màu xám
+            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(R.color.gray)); // Màu xám
+            imgEmployee.setBackgroundColor(context.getResources().getColor(R.color.gray)); // Màu xám
         }
 
         // Thêm sự kiện click
@@ -146,7 +146,7 @@ public class EmployeeAdapter extends BaseAdapter {
         }
 
         // Cập nhật Spinner với danh sách trạng thái
-        String[] statuses = {"Còn hạn hợp đồng", "Đã hết hạn hợp đồng"};
+        String[] statuses = {"Đi làm", "Nghỉ làm"};
         ArrayAdapter<String> statusAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, statuses);
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         statusEmployeeDetail.setAdapter(statusAdapter);

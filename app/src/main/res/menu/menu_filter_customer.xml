@@ -5,15 +5,15 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/filter_VIP_customer"
-            android:title="Khách hàng VIP"
+            android:title="VIP"
             tools:ignore="HardcodedText" />
         <item
             android:id="@+id/filter_customer"
-            android:title="Khách hàng thường"
+            android:title="Phổ thông"
             tools:ignore="HardcodedText" />
     </group>
     <item
         android:id="@+id/filter_clear_customer"
-        android:title="Xóa bộ lọc"
+        android:title="Hủy lọc"
         tools:ignore="HardcodedText" />
 </menu>
