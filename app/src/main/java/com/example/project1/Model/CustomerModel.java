@@ -49,7 +49,7 @@ public class CustomerModel {
         isVIP = VIP;
     }
 
-    public String getRole() {
+    public String getStatus() {
         return this.isVIP ? "Khách hàng VIP" : "Khách hàng thường";
     }
 }
