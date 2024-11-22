@@ -23,6 +23,7 @@ public class CustomerDao {
         ContentValues values = new ContentValues();
         values.put("Name", customer.getName());
         values.put("Phone_Number", customer.getPhoneNumber());
+        values.put("isVIP", customer.isVIP() ? 1 : 0);
 
         long result = db.insert("customer", null, values);
         if (result != -1) {
@@ -33,8 +34,8 @@ public class CustomerDao {
     }
 
     // Xóa tài khoản
-    public boolean delete(String Customername) {
-        int result = db.delete("customer", "Name = ?", new String[]{Customername});
+    public boolean delete(String customerName) {
+        int result = db.delete("customer", "Name = ?", new String[]{customerName});
         return result > 0;
     }
 
@@ -49,6 +50,7 @@ public class CustomerDao {
         ContentValues values = new ContentValues();
         values.put("Name", customer.getName());
         values.put("Phone_Number", customer.getPhoneNumber());
+        values.put("isVIP", customer.isVIP() ? 1 : 0);
 
         // Thực hiện cập nhật
         int result = db.update("customer", values, "ID_Customer = ?", new String[]{String.valueOf(customer.getId())});
@@ -81,6 +83,7 @@ public class CustomerDao {
                 customer.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ID_Customer")));
                 customer.setName(cursor.getString(cursor.getColumnIndexOrThrow("Name")));
                 customer.setPhoneNumber(cursor.getString(cursor.getColumnIndexOrThrow("Phone_Number")));
+                customer.setVIP(cursor.getInt(cursor.getColumnIndexOrThrow("isVIP")) == 1);
 
                 // Thêm vào danh sách
                 customerList.add(customer);
