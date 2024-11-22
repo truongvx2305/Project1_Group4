@@ -5,17 +5,17 @@ public class CustomerModel {
     private String name;
     private String phoneNumber;
 
-    private boolean isActive;
+    private boolean isVIP;
 
 
     public CustomerModel() {
     }
 
-    public CustomerModel(int id, String name, String phoneNumber, boolean isActive) {
+    public CustomerModel(int id, String name, String phoneNumber, boolean isVIP) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.isActive = isActive;
+        this.isVIP = isVIP;
     }
 
     public int getId() {
@@ -42,11 +42,15 @@ public class CustomerModel {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public boolean isVIP() {
+        return isVIP;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setVIP(boolean VIP) {
+        isVIP = VIP;
+    }
+
+    public String getStatus() {
+        return this.isVIP ? "Khách hàng VIP" : "Khách hàng thường";
     }
 }
