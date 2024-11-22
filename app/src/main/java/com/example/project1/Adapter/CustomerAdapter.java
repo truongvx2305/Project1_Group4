@@ -1,5 +1,6 @@
 package com.example.project1.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.project1.Model.CustomerModel;
+import com.example.project1.Model.UserModel;
 import com.example.project1.R;
 
 
@@ -38,6 +40,7 @@ public class CustomerAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -51,6 +54,7 @@ public class CustomerAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.cusName = convertView.findViewById(R.id.nameCustomer);
             holder.cusPhone = convertView.findViewById(R.id.phoneCustomer);
+            holder.cusStatus = convertView.findViewById(R.id.isVipCustomer);
 
             // Lưu ViewHolder vào View
             convertView.setTag(holder);
@@ -61,8 +65,15 @@ public class CustomerAdapter extends BaseAdapter {
 
         // Gán dữ liệu từ CustomerModel vào View
         CustomerModel customer = customerList.get(position);
-        holder.cusName.setText(customer.getName());
-        holder.cusPhone.setText(customer.getPhoneNumber());
+        holder.cusName.setText("Họ tên: " + customer.getName());
+        holder.cusPhone.setText("Số điện thoại: " + customer.getPhoneNumber());
+        holder.cusStatus.setText(customer.getStatus());
+
+        // Đặt màu cho trạng thái
+        int statusColor = customer.isVIP()
+                ? context.getResources().getColor(R.color.yellow) // Màu vàng
+                : context.getResources().getColor(R.color.white); // Màu đen
+        holder.cusStatus.setTextColor(statusColor);
 
         return convertView;
     }
@@ -71,7 +82,7 @@ public class CustomerAdapter extends BaseAdapter {
     private static class ViewHolder {
         TextView cusName;
         TextView cusPhone;
+        TextView cusStatus;
     }
-
 }
 

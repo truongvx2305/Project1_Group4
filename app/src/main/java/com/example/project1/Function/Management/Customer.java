@@ -21,12 +21,9 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 
 import com.example.project1.Adapter.CustomerAdapter;
-import com.example.project1.Adapter.EmployeeAdapter;
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.CustomerDao;
-import com.example.project1.Dao.UserDao;
 import com.example.project1.Model.CustomerModel;
-import com.example.project1.Model.UserModel;
 import com.example.project1.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -35,30 +32,38 @@ import java.util.List;
 
 public class Customer extends Fragment {
     private List<CustomerModel> customerList;
-    private ListView Customerview;
+    private ListView customerView;
     private CustomerAdapter adapter;
     private ImageView filterCustomer;
     private EditText searchCustomer;
     private Integer currentFilterStatus = null;
     private String username;
 
-
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.customer, container, false);
 
-        //Kết nối cơ sở dữ liệu
+        // Kết nối cơ sở dữ liệu
         DatabaseHelper dbHelper = new DatabaseHelper(getContext());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         CustomerDao customerDao = new CustomerDao(db);
 
+        // Lấy danh sách khách hàng từ database
         customerList = customerDao.getCustomerList();
 
-        Customerview = view.findViewById(R.id.listCustomer);
-        Customerview.setAdapter(adapter);
+        // Liên kết ListView
+        customerView = view.findViewById(R.id.listCustomer);
 
+        // Khởi tạo adapter và gán cho ListView
+        adapter = new CustomerAdapter(getContext(), customerList);
+        customerView.setAdapter(adapter);
+
+        // Thiết lập tìm kiếm
         searchCustomer = view.findViewById(R.id.searchCustomer);
         searchCustomer.addTextChangedListener(new TextWatcher() {
             @Override
@@ -76,49 +81,47 @@ public class Customer extends Fragment {
             }
         });
 
+        // Thiết lập nút lọc
         filterCustomer = view.findViewById(R.id.filterCustomer);
         filterCustomer.setOnClickListener(this::filterClick);
 
-        FloatingActionButton btnAddEmployee = view.findViewById(R.id.btn_addCustomer);
-        btnAddEmployee.setOnClickListener(v -> {
-            showDialogAddCustomer();
-        });
+        // Nút thêm khách hàng
+        FloatingActionButton btnAddCustomer = view.findViewById(R.id.btn_addCustomer);
+        btnAddCustomer.setOnClickListener(v -> showDialogAddCustomer());
 
         return view;
     }
 
- //lọc khách hàng vip hay khách hàng thường
- private void filterCustomerAndStatus(String query, Integer statusFilter) {
-     if (query != null && query.trim().isEmpty()) {
-         query = ""; // Nếu chỉ nhập khoảng trắng, xem như không có tìm kiếm
-     }
+    // Lọc khách hàng theo tìm kiếm và trạng thái
+    private void filterCustomerAndStatus(String query, Integer statusFilter) {
+        if (query != null && query.trim().isEmpty()) {
+            query = ""; // Nếu chỉ nhập khoảng trắng, xem như không có tìm kiếm
+        }
 
-     List<CustomerModel> filteredList = new ArrayList<>();
+        List<CustomerModel> filteredList = new ArrayList<>();
 
-     for (CustomerModel customer : customerList) {
-         boolean matchesSearch = query == null || query.isEmpty()
-                 || String.valueOf(customer.getId()).contains(query)
-                 || customer.getName().toLowerCase().contains(query.toLowerCase())
-                 || customer.getPhoneNumber().contains(query);
+        for (CustomerModel customer : customerList) {
+            boolean matchesSearch = query == null || query.isEmpty()
+                    || String.valueOf(customer.getId()).contains(query)
+                    || customer.getName().toLowerCase().contains(query.toLowerCase())
+                    || customer.getPhoneNumber().contains(query);
 
-         // Kiểm tra trạng thái khách hàng
-         boolean matchesStatus = (statusFilter == null) // Không lọc trạng thái
-                 || (statusFilter == 1 && customer.isVIP()) // Lọc khách hàng VIP
-                 || (statusFilter == 0 && !customer.isVIP()); // Lọc khách hàng thường
+            // Kiểm tra trạng thái khách hàng
+            boolean matchesStatus = (statusFilter == null) // Không lọc trạng thái
+                    || (statusFilter == R.id.filter_VIP_customer && customer.isVIP()) // Lọc khách hàng VIP
+                    || (statusFilter == R.id.filter_customer && !customer.isVIP()); // Lọc khách hàng thường
 
-         // Chỉ thêm vào danh sách nếu thỏa mãn cả tìm kiếm và trạng thái
-         if (matchesSearch && matchesStatus) {
-             filteredList.add(customer);
-         }
-     }
+            // Chỉ thêm vào danh sách nếu thỏa mãn cả tìm kiếm và trạng thái
+            if (matchesSearch && matchesStatus) {
+                filteredList.add(customer);
+            }
+        }
 
-     adapter = new CustomerAdapter(getContext(), filteredList);
-     Customerview.setAdapter(adapter);
- }
+        adapter = new CustomerAdapter(getContext(), filteredList);
+        customerView.setAdapter(adapter);
+    }
 
-
-
-    //filter
+    // Bộ lọc trạng thái khách hàng
     private void filterClick(View v) {
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.menu_filter_customer, popupMenu.getMenu());
@@ -135,24 +138,12 @@ public class Customer extends Fragment {
                 // Xóa bộ lọc
                 currentFilterStatus = null;
                 filterCustomerAndStatus(searchCustomer.getText().toString(), null);
-
-                // Reset trạng thái chọn cho tất cả mục
-                popupMenu.getMenu().findItem(R.id.filter_VIP_customer).setChecked(false);
-                popupMenu.getMenu().findItem(R.id.filter_customer).setChecked(false);
             } else {
                 // Đặt trạng thái mới
                 currentFilterStatus = itemId;
 
                 // Áp dụng lọc trạng thái
-                if (itemId == R.id.filter_VIP_customer) {
-                    filterCustomerAndStatus(searchCustomer.getText().toString(), R.id.filter_VIP_customer);
-                } else if (itemId == R.id.filter_customer) {
-                    filterCustomerAndStatus(searchCustomer.getText().toString(), R.id.filter_customer);
-                }
-
-                // Đặt tick trạng thái được chọn, bỏ tick trạng thái khác
-                popupMenu.getMenu().findItem(R.id.filter_VIP_customer).setChecked(itemId == R.id.filter_VIP_customer);
-                popupMenu.getMenu().findItem(R.id.filter_customer).setChecked(itemId == R.id.filter_customer);
+                filterCustomerAndStatus(searchCustomer.getText().toString(), itemId);
             }
 
             return true;
@@ -161,17 +152,17 @@ public class Customer extends Fragment {
         popupMenu.show();
     }
 
-
+    // Hiển thị dialog thêm khách hàng mới
     private void showDialogAddCustomer() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View dialogView = inflater.inflate(R.layout.dialog_add_customer, null);
         builder.setView(dialogView);
 
-        EditText usernameAddCustomer = dialogView.findViewById(R.id.usernameAddCustomer);
-        EditText sdtAddCustomer = dialogView.findViewById(R.id.sdtAddCustomer);
+        EditText usernameAddCustomer = dialogView.findViewById(R.id.nameAddCustomer);
+        EditText sdtAddCustomer = dialogView.findViewById(R.id.phoneAddCustomer);
 
-        builder.setPositiveButton("Thêm", null); // Để null để xử lý kiểm tra sau
+        builder.setPositiveButton("Thêm", null);
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
         AlertDialog dialog = builder.create();
@@ -180,9 +171,9 @@ public class Customer extends Fragment {
             Button addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             addButton.setOnClickListener(v -> {
                 String name = usernameAddCustomer.getText().toString().trim();
-                String sdt  = sdtAddCustomer.getText().toString().trim();
+                String sdt = sdtAddCustomer.getText().toString().trim();
 
-                // 1. Kiểm tra trống
+                // Kiểm tra dữ liệu đầu vào
                 if (TextUtils.isEmpty(name)) {
                     usernameAddCustomer.setError("Vui lòng nhập tên khách hàng!");
                     return;
@@ -191,20 +182,10 @@ public class Customer extends Fragment {
                     sdtAddCustomer.setError("Vui lòng nhập số điện thoại!");
                     return;
                 }
-
-
-                // 2. Kiểm tra định dạng tên khách hàng (nếu là email hoặc không chứa ký tự đặc biệt)
-                if (!name.matches("^[a-zA-Z0-9._-]{5,}$")) {
-                    usernameAddCustomer.setError("Tên khách hàng chỉ được chứa chữ, số và ký tự ._-");
-                    return;
-                }
-
                 if (!sdt.matches("^\\d{10,}$")) {
-                    sdtAddCustomer.setError("Số điện thoại phải chứa ít nhất 10 chữ số và chỉ bao gồm số!");
+                    sdtAddCustomer.setError("Số điện thoại không hợp lệ!");
                     return;
                 }
-
-
 
                 // Tạo đối tượng CustomerModel mới
                 CustomerModel newCustomer = new CustomerModel();
@@ -213,13 +194,17 @@ public class Customer extends Fragment {
                 newCustomer.setVIP(false);
 
                 // Thêm vào cơ sở dữ liệu
-                boolean isInserted = CustomerDao.insert(newCustomer);
+                DatabaseHelper dbHelper = new DatabaseHelper(getContext());
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                CustomerDao customerDao = new CustomerDao(db);
+
+                boolean isInserted = customerDao.insert(newCustomer);
 
                 if (isInserted) {
-                    // Cập nhật danh sách hiển thị
-                    customerList.add(newCustomer);
-
+                    customerList.clear();
+                    customerList.addAll(customerDao.getCustomerList()); // Tải lại từ cơ sở dữ liệu
                     adapter.notifyDataSetChanged();
+
                     Toast.makeText(getContext(), "Thêm khách hàng thành công", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
@@ -230,8 +215,4 @@ public class Customer extends Fragment {
 
         dialog.show();
     }
-
-
-
-
 }

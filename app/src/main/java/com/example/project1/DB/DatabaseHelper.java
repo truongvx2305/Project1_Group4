@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String discountTable = "discount";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 5);
+        super(context, DATABASE_NAME, null, 8);
     }
 
     @Override
@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertEmployee2(db);
         // Chèn dữ liệu khách hàng mẫu
         insertCustomer(db);
+        insertCustomer2(db);
         // Chèn dữ liệu giảm giá mẫu
         insertDiscount(db);
     }
@@ -131,8 +132,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues customer = new ContentValues();
         customer.put("Name", "Customer001");
         customer.put("Phone_Number", "0123456789");
+        customer.put("isVIP", 1);
 
         db.insert(customerTable, null, customer);
+    }
+
+    private void insertCustomer2(SQLiteDatabase db) {
+        ContentValues customer2 = new ContentValues();
+        customer2.put("Name", "Customer002");
+        customer2.put("Phone_Number", "019999999");
+        customer2.put("isVIP", 1);
+
+        db.insert(customerTable, null, customer2);
     }
 
     private void insertDiscount(SQLiteDatabase db) {

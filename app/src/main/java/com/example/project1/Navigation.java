@@ -25,6 +25,7 @@ import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
 import com.example.project1.Function.Home;
 import com.example.project1.Function.Login;
+import com.example.project1.Function.Management.Customer;
 import com.example.project1.Function.Management.Employee;
 import com.example.project1.Function.Profile;
 import com.example.project1.Function.SecurityLock;
@@ -198,6 +199,10 @@ public class Navigation extends AppCompatActivity {
             fragment = new Employee();
             ((Employee) fragment).setUsername(username);
             title = "Quản lý nhân viên";
+        } else if (itemId == R.id.item_customer_management) {
+            fragment = new Customer();
+            ((Customer) fragment).setUsername(username);
+            title = "Quản lý khách hàng";
         } else if (itemId == R.id.item_profile) {
             fragment = new Profile();
             ((Profile) fragment).setUsername(username);

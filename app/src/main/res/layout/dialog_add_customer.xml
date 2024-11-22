@@ -42,7 +42,7 @@
                     tools:ignore="HardcodedText" />
 
                 <EditText
-                    android:id="@+id/usernameAddCustomer"
+                    android:id="@+id/nameAddCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
@@ -59,7 +59,7 @@
                     tools:ignore="HardcodedText" />
 
                 <EditText
-                    android:id="@+id/passwordAddCustomer"
+                    android:id="@+id/phoneAddCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
