@@ -4,9 +4,7 @@ public class CustomerModel {
     private int id;
     private String name;
     private String phoneNumber;
-
     private boolean isVIP;
-
 
     public CustomerModel() {
     }
@@ -16,6 +14,7 @@ public class CustomerModel {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.isVIP = isVIP;
+
     }
 
     public int getId() {

@@ -56,7 +56,7 @@ public class DiscountDao {
 
     // 2. Các phương thức kiểm tra dữ liệu
 
-    // 3. Các phương thức lấy phiếu giảm giá người dùng
+    // 3. Các phương thức lấy phiếu giảm giá
 
     // Lấy danh sách
     public List<DiscountModel> getAlLDiscount() {
