@@ -82,8 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + discountTable + " (" +
                 "ID_Discount INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Name TEXT, " +
-                "Discount_Price REAL, " +              // Giá trị giảm (vd: 10% = 0.1)
-                "Min_Order_Price REAL, " +             // Giá trị hóa đơn tối thiểu để áp dụng
+                "Discount_Price REAL, " +              // Giá trị giảm (vd: 10% = 0.1)/-strong/-heart:>:o:-((:-h "Min_Order_Price REAL, " +             // Giá trị hóa đơn tối thiểu để áp dụng
                 "Start_Date TEXT, " +                  // Ngày bắt đầu
                 "End_Date TEXT, " +                    // Ngày kết thúc
                 "isValid INTEGER)");                   // Hạn sử dụng

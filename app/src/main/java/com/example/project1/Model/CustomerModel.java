@@ -4,17 +4,14 @@ public class CustomerModel {
     private int id;
     private String name;
     private String phoneNumber;
-    private boolean isVIP;
 
     public CustomerModel() {
     }
 
-    public CustomerModel(int id, String name, String phoneNumber, boolean isVIP) {
+    public CustomerModel(int id, String name, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.isVIP = isVIP;
-
     }
 
     public int getId() {
@@ -39,17 +36,5 @@ public class CustomerModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    public boolean isVIP() {
-        return isVIP;
-    }
-
-    public void setVIP(boolean VIP) {
-        isVIP = VIP;
-    }
-
-    public String getStatus() {
-        return this.isVIP ? "Khách hàng VIP" : "Khách hàng thường";
     }
 }
