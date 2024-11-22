@@ -5,13 +5,17 @@ public class CustomerModel {
     private String name;
     private String phoneNumber;
 
+    private boolean isActive;
+
+
     public CustomerModel() {
     }
 
-    public CustomerModel(int id, String name, String phoneNumber) {
+    public CustomerModel(int id, String name, String phoneNumber, boolean isActive) {
         this.id = id;
         this.name = name;
         this.phoneNumber = phoneNumber;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -36,5 +40,13 @@ public class CustomerModel {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
