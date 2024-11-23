@@ -160,9 +160,7 @@ public class Navigation extends AppCompatActivity {
         if (!user.isAdmin()) {
             Log.d("Navigation", "Người dùng không phải là admin. Ẩn các mục dành cho admin.");
             int[] restrictedItems = {
-                    R.id.item_view_product,
                     R.id.item_product_management,
-                    R.id.item_voucher_management,
                     R.id.item_employee_management,
                     R.id.item_report_statistics
             };

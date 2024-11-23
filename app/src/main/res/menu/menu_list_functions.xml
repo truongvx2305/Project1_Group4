@@ -10,6 +10,42 @@
             android:title="Trang chủ"
             tools:ignore="HardcodedText" />
 
+        <!-- Mục Chức năng -->
+        <item
+            android:id="@+id/item_function_management"
+            android:title="Chức năng chính"
+            tools:ignore="HardcodedText">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/item_product_management"
+                        android:icon="@drawable/box"
+                        android:title="Quản lý sản phẩm"
+                        tools:ignore="HardcodedText" />
+                    <item
+                        android:id="@+id/item_discount_management"
+                        android:icon="@drawable/discount"
+                        android:title="Quản lý khuyến mãi"
+                        tools:ignore="HardcodedText" />
+                    <item
+                        android:id="@+id/item_bill_management"
+                        android:icon="@drawable/newspaper"
+                        android:title="Quản lý hóa đơn"
+                        tools:ignore="HardcodedText" />
+                    <item
+                        android:id="@+id/item_employee_management"
+                        android:icon="@drawable/user"
+                        android:title="Quản lý nhân viên"
+                        tools:ignore="HardcodedText" />
+                    <item
+                        android:id="@+id/item_customer_management"
+                        android:icon="@drawable/people"
+                        android:title="Quản lý khách hàng"
+                        tools:ignore="HardcodedText" />
+                </group>
+            </menu>
+        </item>
+
         <!-- Mục Quản lý kho hàng -->
         <item
             android:id="@+id/item_warehouse_management"
@@ -23,53 +59,13 @@
                         android:title="Danh sách sản phẩm"
                         tools:ignore="HardcodedText" />
                     <item
-                        android:id="@+id/item_view_product"
+                        android:id="@+id/item_history_product"
                         android:icon="@drawable/history"
                         android:title="Lịch sử xuất - nhập kho"
                         tools:ignore="HardcodedText" />
                 </group>
             </menu>
         </item>
-
-        <!-- Mục Chức năng -->
-        <item
-            android:id="@+id/item_function_management"
-            android:title="Chức năng"
-            tools:ignore="HardcodedText">
-            <menu>
-                <group android:checkableBehavior="single">
-                    <item
-                        android:id="@+id/item_product_management"
-                        android:icon="@drawable/box"
-                        android:title="Quản lý sản phẩm"
-                        tools:ignore="HardcodedText" />
-                    <item
-                        android:id="@+id/item_voucher_management"
-                        android:icon="@drawable/vocher"
-                        android:title="Quản lý voucher"
-                        tools:ignore="HardcodedText" />
-                    <item
-                        android:id="@+id/item_bill_management"
-                        android:icon="@drawable/newspaper"
-                        android:title="Quản lý hóa đơn"
-                        tools:ignore="HardcodedText" />
-                </group>
-            </menu>
-        </item>
-
-        <!-- Mục Quản lý nhân viên -->
-        <item
-            android:id="@+id/item_employee_management"
-            android:icon="@drawable/user"
-            android:title="Quản lý nhân viên"
-            tools:ignore="HardcodedText" />
-
-        <!-- Mục Quản lý khách hàng -->
-        <item
-            android:id="@+id/item_customer_management"
-            android:icon="@drawable/people"
-            android:title="Quản lý khách hàng"
-            tools:ignore="HardcodedText" />
 
         <!-- Mục Báo cáo - Thống kê -->
         <item

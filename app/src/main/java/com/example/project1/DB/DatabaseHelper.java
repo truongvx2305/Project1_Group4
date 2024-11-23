@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String discountTable = "discount";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 8);
+        super(context, DATABASE_NAME, null, 9);
     }
 
     @Override
@@ -83,10 +83,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + discountTable + " (" +
                 "ID_Discount INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Name TEXT, " +
-                "Discount_Price REAL, " +              // Giá trị giảm (vd: 10% = 0.1)/-strong/-heart:>:o:-((:-h "Min_Order_Price REAL, " +             // Giá trị hóa đơn tối thiểu để áp dụng
-                "Start_Date TEXT, " +                  // Ngày bắt đầu
-                "End_Date TEXT, " +                    // Ngày kết thúc
-                "isValid INTEGER)");                   // Hạn sử dụng
+                "Discount_Price REAL, " +
+                "Min_Order_Price REAL, " + // Giá trị hóa đơn tối thiểu để áp dụng
+                "Start_Date TEXT, " +      // Ngày bắt đầu
+                "End_Date TEXT, " +        // Ngày kết thúc
+                "isValid INTEGER)");       // Hạn sử dụng
     }
 
     private void insertAdmin(SQLiteDatabase db) {
