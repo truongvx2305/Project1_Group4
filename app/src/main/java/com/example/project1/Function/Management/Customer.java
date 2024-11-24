@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -88,6 +89,13 @@ public class Customer extends Fragment {
         // Nút thêm khách hàng
         FloatingActionButton btnAddCustomer = view.findViewById(R.id.btn_addCustomer);
         btnAddCustomer.setOnClickListener(v -> showDialogAddCustomer());
+
+        // Thêm sự kiện khi nhấn vào một khách hàng
+        customerView.setOnItemClickListener((parent, view1, position, id) -> {
+            CustomerModel selectedCustomer = customerList.get(position);
+            showUpdateCustomerDialog(selectedCustomer);
+        });
+
 
         return view;
     }
@@ -215,4 +223,71 @@ public class Customer extends Fragment {
 
         dialog.show();
     }
+
+    // Hiển thị dialog cập nhật thông tin khách hàng
+    private void showUpdateCustomerDialog(CustomerModel customer) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View dialogView = inflater.inflate(R.layout.dialog_update_customer, null);
+        builder.setView(dialogView);
+
+        EditText nameEdit = dialogView.findViewById(R.id.nameUpdateCustomer);
+        EditText phoneEdit = dialogView.findViewById(R.id.phoneUpdateCustomer);
+        CheckBox vipCheckBox = dialogView.findViewById(R.id.vipUpdateCustomer);
+
+        // Gán giá trị hiện tại vào dialog
+        nameEdit.setText(customer.getName());
+        phoneEdit.setText(customer.getPhoneNumber());
+        vipCheckBox.setChecked(customer.isVIP());
+
+        builder.setPositiveButton("Cập nhật", null);
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button updateButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            updateButton.setOnClickListener(v -> {
+                String newName = nameEdit.getText().toString().trim();
+                String newPhone = phoneEdit.getText().toString().trim();
+                boolean isVIP = vipCheckBox.isChecked();
+
+                // Kiểm tra dữ liệu đầu vào
+                if (TextUtils.isEmpty(newName)) {
+                    nameEdit.setError("Vui lòng nhập tên khách hàng!");
+                    return;
+                }
+                if (TextUtils.isEmpty(newPhone)) {
+                    phoneEdit.setError("Vui lòng nhập số điện thoại!");
+                    return;
+                }
+                if (!newPhone.matches("^\\d{10,}$")) {
+                    phoneEdit.setError("Số điện thoại không hợp lệ!");
+                    return;
+                }
+
+                // Cập nhật thông tin khách hàng
+                customer.setName(newName);
+                customer.setPhoneNumber(newPhone);
+                customer.setVIP(isVIP);
+
+                CustomerDao customerDao = new CustomerDao(new DatabaseHelper(getContext()).getWritableDatabase());
+                boolean isUpdated = customerDao.updateCusProfile(customer);
+
+                if (isUpdated) {
+                    customerList.clear();
+                    customerList.addAll(customerDao.getCustomerList()); // Tải lại danh sách
+                    adapter.notifyDataSetChanged();
+
+                    Toast.makeText(getContext(), "Cập nhật khách hàng thành công", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    Toast.makeText(getContext(), "Có lỗi xảy ra khi cập nhật khách hàng", Toast.LENGTH_SHORT).show();
+                }
+            });
+        });
+
+        dialog.show();
+    }
+
 }
