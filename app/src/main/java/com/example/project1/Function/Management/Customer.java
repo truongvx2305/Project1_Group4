@@ -213,10 +213,10 @@ public class Customer extends Fragment {
                     customerList.addAll(customerDao.getCustomerList()); // Tải lại từ cơ sở dữ liệu
                     adapter.notifyDataSetChanged();
 
-                    Toast.makeText(getContext(), "Thêm khách hàng thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Thêm khách hàng thành công!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(getContext(), "Có lỗi xảy ra khi thêm khách hàng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Có lỗi xảy ra khi thêm khách hàng!", Toast.LENGTH_SHORT).show();
                 }
             });
         });
@@ -233,12 +233,10 @@ public class Customer extends Fragment {
 
         EditText nameEdit = dialogView.findViewById(R.id.nameUpdateCustomer);
         EditText phoneEdit = dialogView.findViewById(R.id.phoneUpdateCustomer);
-        CheckBox vipCheckBox = dialogView.findViewById(R.id.vipUpdateCustomer);
 
         // Gán giá trị hiện tại vào dialog
         nameEdit.setText(customer.getName());
         phoneEdit.setText(customer.getPhoneNumber());
-        vipCheckBox.setChecked(customer.isVIP());
 
         builder.setPositiveButton("Cập nhật", null);
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
@@ -250,7 +248,6 @@ public class Customer extends Fragment {
             updateButton.setOnClickListener(v -> {
                 String newName = nameEdit.getText().toString().trim();
                 String newPhone = phoneEdit.getText().toString().trim();
-                boolean isVIP = vipCheckBox.isChecked();
 
                 // Kiểm tra dữ liệu đầu vào
                 if (TextUtils.isEmpty(newName)) {
@@ -269,7 +266,6 @@ public class Customer extends Fragment {
                 // Cập nhật thông tin khách hàng
                 customer.setName(newName);
                 customer.setPhoneNumber(newPhone);
-                customer.setVIP(isVIP);
 
                 CustomerDao customerDao = new CustomerDao(new DatabaseHelper(getContext()).getWritableDatabase());
                 boolean isUpdated = customerDao.updateCusProfile(customer);
@@ -279,10 +275,10 @@ public class Customer extends Fragment {
                     customerList.addAll(customerDao.getCustomerList()); // Tải lại danh sách
                     adapter.notifyDataSetChanged();
 
-                    Toast.makeText(getContext(), "Cập nhật khách hàng thành công", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Cập nhật khách hàng thành công!", Toast.LENGTH_SHORT).show();
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(getContext(), "Có lỗi xảy ra khi cập nhật khách hàng", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Có lỗi xảy ra khi cập nhật khách hàng!", Toast.LENGTH_SHORT).show();
                 }
             });
         });
