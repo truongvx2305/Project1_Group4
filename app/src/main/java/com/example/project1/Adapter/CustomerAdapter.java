@@ -11,20 +11,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.project1.Model.CustomerModel;
-import com.example.project1.Model.UserModel;
 import com.example.project1.R;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerAdapter extends BaseAdapter {
-    private Context context;
-    private List<CustomerModel> customerList;
-
+    private final Context context;
+    private final List<CustomerModel> customerList;
 
     public CustomerAdapter(Context context, List<CustomerModel> customerList) {
         this.context = context;
-        this.customerList = customerList;
+        this.customerList = new ArrayList<>(customerList);
+    }
+
+    public void updateList(List<CustomerModel> newList) {
+        customerList.clear();
+        customerList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @Override

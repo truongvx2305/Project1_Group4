@@ -15,20 +15,6 @@ public class UserModel {
     public UserModel() {
     }
 
-    // Constructor không có ảnh (cho trường hợp chưa có ảnh)
-    public UserModel(int id, String username, String password, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive, String securityLock) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.isAdmin = isAdmin;
-        this.isActive = isActive;
-        this.securityLock = securityLock;
-    }
-
-    // Constructor có ảnh
     public UserModel(int id, String username, String password, byte[] image, String name, String email, String phoneNumber, boolean isAdmin, boolean isActive, String securityLock) {
         this.id = id;
         this.username = username;
