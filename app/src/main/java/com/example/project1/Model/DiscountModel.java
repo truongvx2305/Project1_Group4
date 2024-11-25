@@ -7,17 +7,20 @@ public class DiscountModel {
     private double minOrderPrice;
     private String startDate;
     private String endDate;
+    private boolean isValid;
 
     public DiscountModel() {
     }
 
-    public DiscountModel(int id, String name, float discountPrice, double minOrderPrice, String startDate, String endDate) {
+    public DiscountModel(int id, String name, float discountPrice, double minOrderPrice, String startDate, String endDate, boolean isValid) {
         this.id = id;
         this.name = name;
         this.discountPrice = discountPrice;
         this.minOrderPrice = minOrderPrice;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isValid = isValid;
+
     }
 
     public int getId() {
@@ -66,5 +69,13 @@ public class DiscountModel {
 
     public void setEndDate(String endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean isValid) {
+        this.isValid = isValid;
     }
 }

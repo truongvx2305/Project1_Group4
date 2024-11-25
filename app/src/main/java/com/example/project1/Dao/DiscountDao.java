@@ -70,8 +70,9 @@ public class DiscountDao {
                 double minOrderPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("Min_Order_Price"));
                 String startDate = cursor.getString(cursor.getColumnIndexOrThrow("Start_Date"));
                 String endDate = cursor.getString(cursor.getColumnIndexOrThrow("End_Date"));
+                boolean isValid = cursor.getInt(cursor.getColumnIndexOrThrow("isValid")) == 1;
 
-                DiscountModel discountModel = new DiscountModel(id, name, discountPrice, minOrderPrice, startDate, endDate);
+                DiscountModel discountModel = new DiscountModel(id, name, discountPrice, minOrderPrice, startDate, endDate, isValid);
                 discounts.add(discountModel);
             } while (cursor.moveToNext());
         }

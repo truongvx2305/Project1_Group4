@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String discountTable = "discount";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 9);
+        super(context, DATABASE_NAME, null, 10);
     }
 
     @Override
@@ -87,6 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Min_Order_Price REAL, " + // Giá trị hóa đơn tối thiểu để áp dụng
                 "Start_Date TEXT, " +      // Ngày bắt đầu
                 "End_Date TEXT, " +        // Ngày kết thúc
+                "Quantity INTEGER, " +     // Số lượng
                 "isValid INTEGER)");       // Hạn sử dụng
     }
 
