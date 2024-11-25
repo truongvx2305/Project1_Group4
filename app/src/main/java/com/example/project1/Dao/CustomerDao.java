@@ -65,17 +65,23 @@ public class CustomerDao {
         }
     }
 
-    // Kiểm tra số điện thoại đã tồn tại
+    // Kiểm tra số điện thoại đã tồn tại trong cả bảng user và bảng customer
     public boolean isPhoneNumberExists(String phoneNumber) {
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM customer WHERE Phone_Number = ?", new String[]{phoneNumber});
-        int count = 0;
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                count = cursor.getInt(0);
+        Cursor cursor = null;
+        boolean exists = false;
+        try {
+            String query = "SELECT 1 FROM user WHERE Phone_Number = ? " +
+                    "UNION SELECT 1 FROM customer WHERE Phone_Number = ?";
+            cursor = db.rawQuery(query, new String[]{phoneNumber, phoneNumber});
+            exists = cursor != null && cursor.moveToFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
             }
-            cursor.close();
         }
-        return count > 0;
+        return exists;
     }
 
     // Lấy danh sách khách hàng

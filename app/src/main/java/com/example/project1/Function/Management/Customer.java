@@ -204,7 +204,7 @@ public class Customer extends Fragment {
         }
 
         CustomerDao customerDao = new CustomerDao(new DatabaseHelper(getContext()).getWritableDatabase());
-        if (customerDao.isPhoneNumberExists(phone)){
+        if (customerDao.isPhoneNumberExists(phone)) {
             phoneField.setError("Số điện thoại đã tồn tại!");
             return false;
         }

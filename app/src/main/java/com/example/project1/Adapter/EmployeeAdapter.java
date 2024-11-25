@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.example.project1.DB.DatabaseHelper;
 import com.example.project1.Dao.UserDao;
 import com.example.project1.Function.SecurityLock;
+import com.example.project1.Model.CustomerModel;
 import com.example.project1.Model.UserModel;
 import com.example.project1.Navigation;
 import com.example.project1.R;
@@ -40,6 +41,12 @@ public class EmployeeAdapter extends BaseAdapter {
         this.context = context;
         this.employeeList = employeeList;
         this.username = username;
+    }
+
+    public void updateList(List<UserModel> newList) {
+        employeeList.clear();
+        employeeList.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @Override

@@ -125,9 +125,7 @@ public class Employee extends Fragment {
             }
         }
 
-        // Cập nhật adapter với danh sách đã lọc
-        adapter = new EmployeeAdapter(getContext(), filteredList, username);
-        listEmployee.setAdapter(adapter);
+        adapter.updateList(filteredList);
     }
 
     private void filterClick(View v) {
