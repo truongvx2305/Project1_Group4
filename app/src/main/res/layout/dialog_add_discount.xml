@@ -36,23 +36,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Tên giảm giá:"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
-
-                <EditText
-                    android:id="@+id/nameAddDiscount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/font"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/font"
                     android:text="Giá giảm giá:"
                     android:textColor="#000000"
                     android:textSize="14sp"

@@ -26,6 +26,8 @@ public class DiscountDao {
         values.put("Min_Order_Price", discount.getMinOrderPrice());
         values.put("Start_Date", discount.getStartDate());
         values.put("End_Date", discount.getEndDate());
+        values.put("Quantity", discount.getQuantity());
+        values.put("isValid", discount.isValid() ? 1 : 0);
 
         long result = db.insert("discount", null, values);
         if (result != -1) {
@@ -38,14 +40,12 @@ public class DiscountDao {
     // Cập nhật
     public boolean update(DiscountModel discount) {
         ContentValues values = new ContentValues();
-        values.put("Name", discount.getName());
-        values.put("Discount_Price", discount.getDiscountPrice());
         values.put("Min_Order_Price", discount.getMinOrderPrice());
-        values.put("Start_Date", discount.getStartDate());
         values.put("End_Date", discount.getEndDate());
+        values.put("Quantity", discount.getQuantity());
 
         int result = db.update("discount", values, "ID_Discount = ?", new String[]{String.valueOf(discount.getId())});
-        return false;
+        return result > 0;
     }
 
     // Xóa
@@ -70,9 +70,10 @@ public class DiscountDao {
                 double minOrderPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("Min_Order_Price"));
                 String startDate = cursor.getString(cursor.getColumnIndexOrThrow("Start_Date"));
                 String endDate = cursor.getString(cursor.getColumnIndexOrThrow("End_Date"));
+                int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("Quantity"));
                 boolean isValid = cursor.getInt(cursor.getColumnIndexOrThrow("isValid")) == 1;
 
-                DiscountModel discountModel = new DiscountModel(id, name, discountPrice, minOrderPrice, startDate, endDate, isValid);
+                DiscountModel discountModel = new DiscountModel(id, name, discountPrice, minOrderPrice, startDate, endDate, quantity, isValid);
                 discounts.add(discountModel);
             } while (cursor.moveToNext());
         }

@@ -1,17 +1,25 @@
 package com.example.project1.Adapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.project1.DB.DatabaseHelper;
+import com.example.project1.Dao.DiscountDao;
 import com.example.project1.Model.DiscountModel;
 import com.example.project1.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +56,6 @@ public class DiscountAdapter extends BaseAdapter {
     @SuppressLint("SetTextI18n")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         ViewHolder holder;
 
         if (convertView == null) {
@@ -71,19 +78,103 @@ public class DiscountAdapter extends BaseAdapter {
         // Gán dữ liệu từ DiscountModel vào View
         DiscountModel discount = discountList.get(position);
         holder.nameDiscount.setText(discount.getName());
-        holder.priceDiscount.setText("Giảm giá: " + discount.getDiscountPrice() + "%");
+        holder.priceDiscount.setText("Giảm giá: " + discount.getDiscountPrice() * 100 + "%");
         holder.minPriceDiscount.setText("Giá tối thiểu: " + discount.getMinOrderPrice() + " VND");
-        holder.quantityDiscount.setText("Số lượng: " + position); // Nếu có trường số lượng, thay thế vào đây
+        holder.quantityDiscount.setText("Số lượng: " + discount.getQuantity());
         holder.endDateDiscount.setText("Ngày kết thúc: " + discount.getEndDate());
         holder.statusDiscount.setText("Trạng thái: " + discount.getStatus());
 
-        // Đặt hình ảnh cho imgDiscount (nếu cần thay đổi theo trạng thái hoặc dữ liệu)
         holder.imgDiscount.setImageResource(R.drawable.discount2);
+
+        // Xử lý sự kiện click để cập nhật
+        convertView.setOnClickListener(v -> showUpdateDialog(discount));
 
         return convertView;
     }
 
-    // ViewHolder để tối ưu hiệu suất
+    private void showUpdateDialog(DiscountModel discount) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_update_discount, null);
+        builder.setView(dialogView);
+
+        EditText minPriceField = dialogView.findViewById(R.id.minPriceUpdateDiscount);
+        EditText endDateField = dialogView.findViewById(R.id.endDateUpdateDiscount);
+        EditText quantityField = dialogView.findViewById(R.id.quantityUpdateDiscount);
+
+        minPriceField.setText(String.valueOf(discount.getMinOrderPrice()));
+        endDateField.setText(discount.getEndDate());
+        quantityField.setText(String.valueOf(discount.getQuantity()));
+
+        builder.setPositiveButton("Cập nhật", null);
+        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button updateButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            updateButton.setOnClickListener(v -> {
+                String newMinPrice = minPriceField.getText().toString().trim();
+                String newEndDate = endDateField.getText().toString().trim();
+                String newQuantity = quantityField.getText().toString().trim();
+
+                if (validateInput(minPriceField, endDateField, quantityField, newMinPrice, newEndDate, newQuantity)) {
+                    discount.setMinOrderPrice(Double.parseDouble(newMinPrice));
+                    discount.setEndDate(newEndDate);
+                    discount.setQuantity(Integer.parseInt(newQuantity));
+
+                    DiscountDao discountDao = new DiscountDao(new DatabaseHelper(context).getWritableDatabase());
+                    if (discountDao.update(discount)) {
+                        updateList(discountDao.getAlLDiscount());
+                        Toast.makeText(context, "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    } else {
+                        Toast.makeText(context, "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        });
+
+        dialog.show();
+    }
+
+    private boolean validateInput(EditText minPriceField, EditText endDateField, EditText quantityField, String minPrice, String endDate, String quantity) {
+        // Kiểm tra giá trị giá đơn hàng
+        if (minPrice.isEmpty() || !minPrice.matches("\\d+(\\.\\d{1,2})?")) {
+            minPriceField.setError("Giá đơn hàng không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra ngày kết thúc có đúng định dạng yyyy-MM-dd
+        if (endDate.isEmpty()) {
+            endDateField.setError("Vui lòng nhập ngày kết thúc!");
+            return false;
+        }
+
+        // Kiểm tra ngày nhập có đúng định dạng yyyy-MM-dd
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(endDate);
+        } catch (ParseException e) {
+            endDateField.setError("Ngày phải có định dạng yyyy-MM-dd!");
+            return false;
+        }
+
+        // Kiểm tra số lượng
+        try {
+            int qty = Integer.parseInt(quantity);
+            if (qty < 0) {
+                quantityField.setError("Số lượng không hợp lệ!");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            quantityField.setError("Số lượng phải là một số nguyên!");
+            return false;
+        }
+
+        return true;
+    }
+
+
     private static class ViewHolder {
         ImageView imgDiscount;
         TextView nameDiscount;

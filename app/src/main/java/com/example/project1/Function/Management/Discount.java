@@ -96,11 +96,6 @@ public class Discount extends Fragment {
         });
 
         filterDiscount.setOnClickListener(this::filterClick);
-
-        discountView.setOnItemClickListener((parent, view, position, id) -> {
-            DiscountModel selectedDiscount = discountList.get(position);
-            showUpdateDiscountDialog(selectedDiscount);
-        });
     }
 
     private void filterDiscountAndStatus(String query, Integer statusFilter) {
@@ -169,10 +164,10 @@ public class Discount extends Fragment {
         View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_add_discount, null);
         builder.setView(dialogView);
 
-        EditText nameField = dialogView.findViewById(R.id.nameAddDiscount);
         EditText priceField = dialogView.findViewById(R.id.priceAddDiscount);
         EditText minPriceField = dialogView.findViewById(R.id.minPriceAddDiscount);
         EditText endDateField = dialogView.findViewById(R.id.endDateAddDiscount);
+        EditText quantityField = dialogView.findViewById(R.id.quantityAddDiscount);
 
         builder.setPositiveButton("Thêm", null);
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
@@ -181,21 +176,22 @@ public class Discount extends Fragment {
         dialog.setOnShowListener(dialogInterface -> {
             Button addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             addButton.setOnClickListener(v -> {
-                String name = nameField.getText().toString().trim();
                 String price = priceField.getText().toString().trim();
                 String minPrice = minPriceField.getText().toString().trim();
                 String endDate = endDateField.getText().toString().trim();
+                String quantity = quantityField.getText().toString().trim();
 
                 // Lấy ngày hiện tại làm startDate
                 String startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                if (validateDiscountInput(nameField, priceField, minPriceField, endDateField, name, price, minPrice, endDate)) {
+                if (validateDiscountInput(priceField, minPriceField, endDateField, quantityField, price, minPrice, endDate, quantity)) {
                     DiscountModel newDiscount = new DiscountModel();
-                    newDiscount.setName(name);
                     newDiscount.setDiscountPrice(Float.parseFloat(price));
+                    newDiscount.setName("Phiếu giảm giá " + newDiscount.getDiscountPrice() * 100 + "%");
                     newDiscount.setMinOrderPrice(Double.parseDouble(minPrice));
                     newDiscount.setStartDate(startDate); // Lưu startDate
                     newDiscount.setEndDate(endDate);
+                    newDiscount.setQuantity(Integer.parseInt(quantity)); // Lưu số lượng
                     newDiscount.setValid(true);
 
                     DiscountDao discountDao = new DiscountDao(new DatabaseHelper(getContext()).getWritableDatabase());
@@ -213,76 +209,77 @@ public class Discount extends Fragment {
         dialog.show();
     }
 
-    private boolean validateDiscountInput(EditText nameField, EditText priceField, EditText minPriceField, EditText endDateField,
-                                          String name, String price, String minPrice, String endDate) {
-        if (TextUtils.isEmpty(name)) {
-            if (nameField != null) {
-                nameField.setError("Vui lòng nhập tên giảm giá!");
-            }
-            return false;
-        }
+    private boolean validateDiscountInput(EditText priceField, EditText minPriceField, EditText endDateField, EditText quantityField,
+                                          String price, String minPrice, String endDate, String quantityStr) {
 
-        if (priceField != null && (TextUtils.isEmpty(price) || !price.matches("\\d+"))) {
+        // Kiểm tra giá giảm giá là số thực hợp lệ
+        if (priceField != null && (TextUtils.isEmpty(price) || !isValidFloat(price))) {
             priceField.setError("Giá giảm giá không hợp lệ!");
             return false;
         }
 
-        if (minPriceField != null && (TextUtils.isEmpty(minPrice) || !minPrice.matches("\\d+"))) {
+        // Kiểm tra giá đơn hàng là số thực hợp lệ
+        if (minPriceField != null && (TextUtils.isEmpty(minPrice) || !isValidDouble(minPrice))) {
             minPriceField.setError("Giá đơn hàng không hợp lệ!");
             return false;
         }
 
+        // Kiểm tra ngày kết thúc có hợp lệ không
         if (TextUtils.isEmpty(endDate)) {
             if (endDateField != null) {
                 endDateField.setError("Vui lòng nhập ngày kết thúc!");
             }
             return false;
         }
+        if (!isValidDate(endDate)) {
+            endDateField.setError("Ngày kết thúc không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra số lượng là số nguyên hợp lệ
+        if (quantityField != null && (TextUtils.isEmpty(quantityStr) || !isValidInteger(quantityStr))) {
+            quantityField.setError("Số lượng không hợp lệ!");
+            return false;
+        }
 
         return true;
     }
 
-    private void showUpdateDiscountDialog(DiscountModel discount) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_update_discount, null);
-        builder.setView(dialogView);
+    private boolean isValidFloat(String str) {
+        try {
+            Float.parseFloat(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
-        EditText nameField = dialogView.findViewById(R.id.minPriceUpdateDiscount);
-        EditText endDateField = dialogView.findViewById(R.id.endDateUpdateDiscount);
-        EditText quantityField = dialogView.findViewById(R.id.quantityUpdateDiscount);
+    private boolean isValidDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
-        nameField.setText(discount.getName());
-        endDateField.setText(discount.getEndDate());
-        quantityField.setText(String.valueOf(discount.getId()));
+    private boolean isValidInteger(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
-        builder.setPositiveButton("Cập nhật", null);
-        builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
-
-        AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(dialogInterface -> {
-            Button updateButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            updateButton.setOnClickListener(v -> {
-                String newName = nameField.getText().toString().trim();
-                String newEndDate = endDateField.getText().toString().trim();
-                String newQuantity = quantityField.getText().toString().trim();
-
-                if (validateDiscountInput(nameField, null, null, endDateField, newName, "", "", newEndDate)) {
-                    discount.setName(newName);
-                    discount.setEndDate(newEndDate);
-                    discount.setId(Integer.parseInt(newQuantity));
-
-                    DiscountDao discountDao = new DiscountDao(new DatabaseHelper(getContext()).getWritableDatabase());
-                    if (discountDao.update(discount)) {
-                        loadData();
-                        Toast.makeText(getContext(), "Cập nhật thành công!", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    } else {
-                        Toast.makeText(getContext(), "Lỗi khi cập nhật!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        });
-
-        dialog.show();
+    private boolean isValidDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        sdf.setLenient(false); // Tắt chế độ linh hoạt (lenient mode)
+        try {
+            Date parsedDate = sdf.parse(date);
+            return parsedDate != null && !parsedDate.before(new Date()); // Kiểm tra ngày không được trước ngày hiện tại
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
