@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.project1.Model.DiscountModel;
-import com.example.project1.Model.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +36,7 @@ public class DiscountDao {
     }
 
     // Cập nhật
-    public void updateDiscount(DiscountModel discount) {
+    public boolean update(DiscountModel discount) {
         ContentValues values = new ContentValues();
         values.put("Name", discount.getName());
         values.put("Discount_Price", discount.getDiscountPrice());
@@ -46,6 +45,7 @@ public class DiscountDao {
         values.put("End_Date", discount.getEndDate());
 
         int result = db.update("discount", values, "ID_Discount = ?", new String[]{String.valueOf(discount.getId())});
+        return false;
     }
 
     // Xóa

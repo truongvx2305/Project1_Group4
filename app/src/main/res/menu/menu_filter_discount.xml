@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/filter_valid_discount"
+            android:title="Còn hạn"
+            tools:ignore="HardcodedText" />
+        <item
+            android:id="@+id/filter_expired_discount"
+            android:title="Hết hạn"
+            tools:ignore="HardcodedText" />
+    </group>
+    <item
+        android:id="@+id/filter_clear_discount"
+        android:title="Hủy lọc"
+        tools:ignore="HardcodedText" />
+</menu>

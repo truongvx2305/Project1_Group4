@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Tên Khách Hàng:"
+                    android:text="Tên khách hàng:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Số Điện Thoại:"
+                    android:text="Số điện thoại:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />

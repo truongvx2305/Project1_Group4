@@ -26,6 +26,7 @@ import com.example.project1.Dao.UserDao;
 import com.example.project1.Function.Home;
 import com.example.project1.Function.Login;
 import com.example.project1.Function.Management.Customer;
+import com.example.project1.Function.Management.Discount;
 import com.example.project1.Function.Management.Employee;
 import com.example.project1.Function.Profile;
 import com.example.project1.Function.SecurityLock;
@@ -193,6 +194,10 @@ public class Navigation extends AppCompatActivity {
             fragment = new Home();
             ((Home) fragment).setUsername(username);
             title = "Trang chủ";
+        } else if (itemId == R.id.item_discount_management) {
+            fragment = new Discount();
+            ((Discount) fragment).setUsername(username);
+            title = "Quản lý giảm giá";
         } else if (itemId == R.id.item_employee_management) {
             fragment = new Employee();
             ((Employee) fragment).setUsername(username);

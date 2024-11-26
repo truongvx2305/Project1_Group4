@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/itemListDiscountLayout"
+    android:id="@+id/dialogAddDiscountLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,33 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="10dp"
         tools:ignore="UselessParent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginBottom="10dp"
             android:background="#FFFFFF"
             android:backgroundTint="#FFFFFF"
             android:elevation="10dp"
             android:orientation="horizontal"
             android:padding="10dp"
-            tools:ignore="UselessParent">
-
-            <ImageView
-                android:id="@+id/imgDiscount"
-                android:layout_width="80dp"
-                android:layout_height="86dp"
-                android:layout_gravity="center_vertical"
-                android:contentDescription="Profile Picture"
-                android:scaleType="centerCrop"
-                android:src="@drawable/discount2"
-                tools:ignore="HardcodedText" />
+            tools:ignore="DisableBaselineAlignment,UselessParent">
 
             <LinearLayout
-                android:id="@+id/linearLayoutDiscount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -45,70 +32,89 @@
                 tools:ignore="RtlSymmetry">
 
                 <TextView
-                    android:id="@+id/nameDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Tên giảm giá"
+                    android:text="Tên giảm giá:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
+                <EditText
+                    android:id="@+id/nameAddDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
                 <TextView
-                    android:id="@+id/priceDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Giá giảm giá"
+                    android:text="Giá giảm giá:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
+                <EditText
+                    android:id="@+id/priceAddDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
                 <TextView
-                    android:id="@+id/minPriceDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Giá tối thiểu"
+                    android:text="Giá đơn hàng:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
+                <EditText
+                    android:id="@+id/minPriceAddDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
                 <TextView
-                    android:id="@+id/quantityDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Số lượng"
+                    android:text="Ngày kết thúc:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
+                <EditText
+                    android:id="@+id/endDateAddDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+
                 <TextView
-                    android:id="@+id/endDateDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Ngày kết thúc"
+                    android:text="Số lượng:"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
 
-                <TextView
-                    android:id="@+id/statusDiscount"
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/quantityAddDiscount"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/font"
-                    android:text="Trạng thái"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
+                    tools:ignore="Autofill,LabelFor,TextFields" />
 
             </LinearLayout>
         </LinearLayout>

@@ -78,4 +78,8 @@ public class DiscountModel {
     public void setValid(boolean isValid) {
         this.isValid = isValid;
     }
+
+    public String getStatus() {
+        return this.isValid ? "Còn hạn" : "Hết hạn";
+    }
 }

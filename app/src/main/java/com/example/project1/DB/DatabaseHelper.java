@@ -12,7 +12,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String discountTable = "discount";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 10);
+        super(context, DATABASE_NAME, null, 11);
     }
 
     @Override
@@ -155,6 +155,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         discount.put("Min_Order_Price", 1000000.0);
         discount.put("Start_Date", "2024-11-21");
         discount.put("End_Date", "2024-12-31");
+        discount.put("Quantity", 10);
+        discount.put("isValid", 1);
 
         db.insert(discountTable, null, discount);
     }
