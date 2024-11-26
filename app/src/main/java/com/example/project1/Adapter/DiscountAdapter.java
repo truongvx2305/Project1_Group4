@@ -221,7 +221,6 @@ public class DiscountAdapter extends BaseAdapter {
     private static class ViewHolder {
         ImageView imgDiscount;
         TextView nameDiscount;
-        TextView priceDiscount;
         TextView minPriceDiscount;
         TextView quantityDiscount;
         TextView endDateDiscount;
