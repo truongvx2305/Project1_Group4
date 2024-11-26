@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -75,15 +74,36 @@ public class Discount extends Fragment {
         discountList.clear();
         discountList.addAll(discountDao.getAlLDiscount());
 
+        // Kiểm tra và cập nhật trạng thái isValid
+        updateDiscountValidity();
+
         adapter = new DiscountAdapter(getContext(), discountList);
         discountView.setAdapter(adapter);
+    }
+
+    private void updateDiscountValidity() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date currentDate = new Date();
+
+        DiscountDao discountDao = new DiscountDao(new DatabaseHelper(getContext()).getWritableDatabase());
+
+        for (DiscountModel discount : discountList) {
+            try {
+                Date endDate = sdf.parse(discount.getEndDate());
+                if (endDate != null && endDate.before(currentDate) && discount.isValid()) {
+                    discount.setValid(false); // Cập nhật trạng thái trong danh sách
+                    discountDao.update(discount); // Lưu trạng thái vào cơ sở dữ liệu
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Log lỗi nếu có
+            }
+        }
     }
 
     private void setupListeners() {
         searchDiscount.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -91,8 +111,7 @@ public class Discount extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         filterDiscount.setOnClickListener(this::filterClick);
@@ -102,27 +121,18 @@ public class Discount extends Fragment {
         List<DiscountModel> filteredList = new ArrayList<>();
         Double searchMinOrder = null;
 
-        // Chuyển đổi query thành số nếu có thể
         if (!TextUtils.isEmpty(query)) {
             try {
                 searchMinOrder = Double.parseDouble(query);
-            } catch (NumberFormatException e) {
-                // Nếu không phải số, searchMinOrder sẽ là null
-            }
+            } catch (NumberFormatException ignored) {}
         }
 
         for (DiscountModel discount : discountList) {
-            boolean matchesSearch = false;
+            boolean matchesSearch = searchMinOrder != null
+                    ? discount.getMinOrderPrice() == searchMinOrder
+                    : String.valueOf(discount.getId()).contains(query)
+                    || discount.getName().toLowerCase().contains(query.toLowerCase());
 
-            // Kiểm tra tìm kiếm
-            if (searchMinOrder != null) {
-                matchesSearch = discount.getMinOrderPrice() == searchMinOrder;
-            } else {
-                matchesSearch = String.valueOf(discount.getId()).contains(query)
-                        || discount.getName().toLowerCase().contains(query.toLowerCase());
-            }
-
-            // Kiểm tra theo trạng thái (valid/expired)
             boolean matchesStatus = (statusFilter == null)
                     || (statusFilter == R.id.filter_valid_discount && discount.isValid())
                     || (statusFilter == R.id.filter_expired_discount && !discount.isValid());
@@ -134,7 +144,6 @@ public class Discount extends Fragment {
 
         adapter.updateList(filteredList);
     }
-
 
     private void filterClick(View v) {
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
@@ -174,14 +183,12 @@ public class Discount extends Fragment {
 
         AlertDialog dialog = builder.create();
         dialog.setOnShowListener(dialogInterface -> {
-            Button addButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            addButton.setOnClickListener(v -> {
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
                 String price = priceField.getText().toString().trim();
                 String minPrice = minPriceField.getText().toString().trim();
                 String endDate = endDateField.getText().toString().trim();
                 String quantity = quantityField.getText().toString().trim();
 
-                // Lấy ngày hiện tại làm startDate
                 String startDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
                 if (validateDiscountInput(priceField, minPriceField, endDateField, quantityField, price, minPrice, endDate, quantity)) {
@@ -189,9 +196,9 @@ public class Discount extends Fragment {
                     newDiscount.setDiscountPrice(Float.parseFloat(price));
                     newDiscount.setName("Phiếu giảm giá " + newDiscount.getDiscountPrice() * 100 + "%");
                     newDiscount.setMinOrderPrice(Double.parseDouble(minPrice));
-                    newDiscount.setStartDate(startDate); // Lưu startDate
+                    newDiscount.setStartDate(startDate);
                     newDiscount.setEndDate(endDate);
-                    newDiscount.setQuantity(Integer.parseInt(quantity)); // Lưu số lượng
+                    newDiscount.setQuantity(Integer.parseInt(quantity));
                     newDiscount.setValid(true);
 
                     DiscountDao discountDao = new DiscountDao(new DatabaseHelper(getContext()).getWritableDatabase());
@@ -211,32 +218,26 @@ public class Discount extends Fragment {
 
     private boolean validateDiscountInput(EditText priceField, EditText minPriceField, EditText endDateField, EditText quantityField,
                                           String price, String minPrice, String endDate, String quantityStr) {
-
-        // Kiểm tra giá giảm giá là số thực hợp lệ
         if (priceField != null && (TextUtils.isEmpty(price) || !isValidFloat(price))) {
             priceField.setError("Giá giảm giá không hợp lệ!");
             return false;
         }
 
-        // Kiểm tra giá đơn hàng là số thực hợp lệ
         if (minPriceField != null && (TextUtils.isEmpty(minPrice) || !isValidDouble(minPrice))) {
             minPriceField.setError("Giá đơn hàng không hợp lệ!");
             return false;
         }
 
-        // Kiểm tra ngày kết thúc có hợp lệ không
         if (TextUtils.isEmpty(endDate)) {
-            if (endDateField != null) {
-                endDateField.setError("Vui lòng nhập ngày kết thúc!");
-            }
+            endDateField.setError("Vui lòng nhập ngày kết thúc!");
             return false;
         }
+
         if (!isValidDate(endDate)) {
             endDateField.setError("Ngày kết thúc không hợp lệ!");
             return false;
         }
 
-        // Kiểm tra số lượng là số nguyên hợp lệ
         if (quantityField != null && (TextUtils.isEmpty(quantityStr) || !isValidInteger(quantityStr))) {
             quantityField.setError("Số lượng không hợp lệ!");
             return false;
@@ -272,12 +273,12 @@ public class Discount extends Fragment {
         }
     }
 
-    private boolean isValidDate(String date) {
+    private boolean isValidDate(String dateStr) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        sdf.setLenient(false); // Tắt chế độ linh hoạt (lenient mode)
+        sdf.setLenient(false);
         try {
-            Date parsedDate = sdf.parse(date);
-            return parsedDate != null && !parsedDate.before(new Date()); // Kiểm tra ngày không được trước ngày hiện tại
+            sdf.parse(dateStr);
+            return true;
         } catch (Exception e) {
             return false;
         }

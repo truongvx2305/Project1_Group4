@@ -64,7 +64,7 @@ public class EmployeeAdapter extends BaseAdapter {
         return position;
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForColorStateLists"})
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
@@ -93,12 +93,11 @@ public class EmployeeAdapter extends BaseAdapter {
 
         LinearLayout linearLayoutEmployee = convertView.findViewById(R.id.linearLayoutEmployee);
         // Đổi màu nền theo trạng thái
+        // Đổi màu nền của LinearLayout dựa trên trạng thái
         if (employee.isActive()) {
-            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
-            imgEmployee.setBackgroundColor(context.getResources().getColor(android.R.color.white)); // Màu trắng
+            linearLayoutEmployee.setBackgroundTintList(context.getResources().getColorStateList(R.color.white)); // Màu trắng
         } else {
-            linearLayoutEmployee.setBackgroundColor(context.getResources().getColor(R.color.gray)); // Màu xám
-            imgEmployee.setBackgroundColor(context.getResources().getColor(R.color.gray)); // Màu xám
+            linearLayoutEmployee.setBackgroundTintList(context.getResources().getColorStateList(R.color.gray)); // Màu xám
         }
 
         // Thêm sự kiện click

@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class DiscountAdapter extends BaseAdapter {
     private final Context context;
@@ -53,7 +55,7 @@ public class DiscountAdapter extends BaseAdapter {
         return position;
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForColorStateLists"})
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
@@ -69,6 +71,7 @@ public class DiscountAdapter extends BaseAdapter {
             holder.quantityDiscount = convertView.findViewById(R.id.quantityDiscount);
             holder.endDateDiscount = convertView.findViewById(R.id.endDateDiscount);
             holder.statusDiscount = convertView.findViewById(R.id.statusDiscount);
+            holder.linearLayoutDiscount = convertView.findViewById(R.id.linearLayoutDiscount);
 
             convertView.setTag(holder);
         } else {
@@ -85,6 +88,13 @@ public class DiscountAdapter extends BaseAdapter {
         holder.statusDiscount.setText("Trạng thái: " + discount.getStatus());
 
         holder.imgDiscount.setImageResource(R.drawable.discount2);
+
+        // Đổi màu nền của LinearLayout dựa trên trạng thái
+        if (discount.isValid()) {
+            holder.linearLayoutDiscount.setBackgroundTintList(context.getResources().getColorStateList(R.color.white)); // Màu trắng
+        } else {
+            holder.linearLayoutDiscount.setBackgroundTintList(context.getResources().getColorStateList(R.color.gray)); // Màu xám
+        }
 
         // Xử lý sự kiện click để cập nhật
         convertView.setOnClickListener(v -> showUpdateDialog(discount));
@@ -153,7 +163,14 @@ public class DiscountAdapter extends BaseAdapter {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateFormat.setLenient(false);
         try {
-            dateFormat.parse(endDate);
+            Date parsedEndDate = dateFormat.parse(endDate);
+            Date currentDate = new Date();
+
+            // Kiểm tra nếu ngày kết thúc nhỏ hơn ngày hiện tại
+            if (parsedEndDate != null && parsedEndDate.before(currentDate)) {
+                endDateField.setError("Ngày kết thúc phải lớn hơn hoặc bằng ngày hiện tại!");
+                return false;
+            }
         } catch (ParseException e) {
             endDateField.setError("Ngày phải có định dạng yyyy-MM-dd!");
             return false;
@@ -183,5 +200,6 @@ public class DiscountAdapter extends BaseAdapter {
         TextView quantityDiscount;
         TextView endDateDiscount;
         TextView statusDiscount;
+        LinearLayout linearLayoutDiscount;
     }
 }
