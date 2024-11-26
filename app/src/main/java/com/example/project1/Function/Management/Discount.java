@@ -1,5 +1,6 @@
 package com.example.project1.Function.Management;
 
+import android.app.DatePickerDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
@@ -26,8 +27,10 @@ import com.example.project1.Model.DiscountModel;
 import com.example.project1.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -103,7 +106,8 @@ public class Discount extends Fragment {
     private void setupListeners() {
         searchDiscount.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -111,7 +115,8 @@ public class Discount extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         filterDiscount.setOnClickListener(this::filterClick);
@@ -124,7 +129,8 @@ public class Discount extends Fragment {
         if (!TextUtils.isEmpty(query)) {
             try {
                 searchMinOrder = Double.parseDouble(query);
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         for (DiscountModel discount : discountList) {
@@ -178,6 +184,9 @@ public class Discount extends Fragment {
         EditText endDateField = dialogView.findViewById(R.id.endDateAddDiscount);
         EditText quantityField = dialogView.findViewById(R.id.quantityAddDiscount);
 
+        // Khi nhấn vào endDateField, hiển thị DatePickerDialog
+        endDateField.setOnClickListener(v -> showDatePickerDialog(endDateField));
+
         builder.setPositiveButton("Thêm", null);
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
@@ -194,8 +203,9 @@ public class Discount extends Fragment {
                 if (validateDiscountInput(priceField, minPriceField, endDateField, quantityField, price, minPrice, endDate, quantity)) {
                     DiscountModel newDiscount = new DiscountModel();
                     newDiscount.setDiscountPrice(Float.parseFloat(price));
-                    newDiscount.setName("Phiếu giảm giá " + newDiscount.getDiscountPrice() * 100 + "%");
-                    newDiscount.setMinOrderPrice(Double.parseDouble(minPrice));
+                    String formattedPercentage = new DecimalFormat("#.#").format(newDiscount.getDiscountPrice() * 100);
+                    newDiscount.setName("Phiếu giảm giá " + formattedPercentage + "%");
+                    newDiscount.setMinOrderPrice(Integer.parseInt(minPrice));
                     newDiscount.setStartDate(startDate);
                     newDiscount.setEndDate(endDate);
                     newDiscount.setQuantity(Integer.parseInt(quantity));
@@ -214,6 +224,27 @@ public class Discount extends Fragment {
         });
 
         dialog.show();
+    }
+
+    // Hiển thị DatePickerDialog
+    private void showDatePickerDialog(EditText editText) {
+        // Lấy ngày hiện tại
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Tạo DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    // Định dạng ngày và đặt vào EditText
+                    String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d",
+                            selectedYear, selectedMonth + 1, selectedDay);
+                    editText.setText(selectedDate);
+                }, year, month, day);
+
+        // Hiển thị DatePickerDialog
+        datePickerDialog.show();
     }
 
     private boolean validateDiscountInput(EditText priceField, EditText minPriceField, EditText endDateField, EditText quantityField,

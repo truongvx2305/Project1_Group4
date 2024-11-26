@@ -4,7 +4,7 @@ public class DiscountModel {
     private int id;
     private String name;
     private float discountPrice;
-    private double minOrderPrice;
+    private int minOrderPrice;
     private String startDate;
     private String endDate;
     private int quantity;
@@ -13,7 +13,7 @@ public class DiscountModel {
     public DiscountModel() {
     }
 
-    public DiscountModel(int id, String name, float discountPrice, double minOrderPrice, String startDate, String endDate, int quantity, boolean isValid) {
+    public DiscountModel(int id, String name, float discountPrice, int minOrderPrice, String startDate, String endDate, int quantity, boolean isValid) {
         this.id = id;
         this.name = name;
         this.discountPrice = discountPrice;
@@ -48,11 +48,11 @@ public class DiscountModel {
         this.discountPrice = discountPrice;
     }
 
-    public double getMinOrderPrice() {
+    public int getMinOrderPrice() {
         return minOrderPrice;
     }
 
-    public void setMinOrderPrice(double minOrderPrice) {
+    public void setMinOrderPrice(int minOrderPrice) {
         this.minOrderPrice = minOrderPrice;
     }
 

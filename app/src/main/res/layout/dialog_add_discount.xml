@@ -46,7 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
+                    android:hint="Nhập giá giảm giá. VD: 0.1 = 10%"
+                    tools:ignore="Autofill,HardcodedText,LabelFor,TextFields" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -63,7 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
+                    android:hint="Nhập giá đơn hàng tối thiểu"
+                    tools:ignore="Autofill,HardcodedText,LabelFor,TextFields" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,7 +82,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
+                    android:hint="Nhập theo định dạng: yyyy-mm-dd"
+                    tools:ignore="Autofill,HardcodedText,LabelFor,TextFields" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,7 +100,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/font"
-                    tools:ignore="Autofill,LabelFor,TextFields" />
+                    android:hint="Nhập số lượng"
+                    tools:ignore="Autofill,HardcodedText,LabelFor,TextFields" />
 
             </LinearLayout>
         </LinearLayout>

@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, 16);
+        super(context, DATABASE_NAME, null, 18);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ID_Discount INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "Name TEXT, " +
                 "Discount_Price REAL, " +
-                "Min_Order_Price REAL, " + // Giá trị hóa đơn tối thiểu để áp dụng
+                "Min_Order_Price INTEGER, " + // Giá trị hóa đơn tối thiểu để áp dụng
                 "Start_Date TEXT, " +      // Ngày bắt đầu
                 "End_Date TEXT, " +        // Ngày kết thúc
                 "Quantity INTEGER, " +     // Số lượng
@@ -178,9 +178,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private void insertDiscount(SQLiteDatabase db) {
         ContentValues discount = new ContentValues();
-        discount.put("Name", "Phiếu giảm giá 10.0%");
+        discount.put("Name", "Phiếu giảm giá 10%");
         discount.put("Discount_Price", 0.1);
-        discount.put("Min_Order_Price", 1000000.0);
+        discount.put("Min_Order_Price", 1000000);
         discount.put("Start_Date", "2024-11-21");
         discount.put("End_Date", "2024-12-31");
         discount.put("Quantity", 10);
