@@ -10,6 +10,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String userTable = "user";
     public static final String customerTable = "customer";
     public static final String discountTable = "discount";
+    public static final String productTable = "product";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 16);
@@ -26,6 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         createCustomerTable(db);
         // Tạo bảng discount
         createDiscountTable(db);
+        // Tạo bảng sản phẩm
+        createProductTable(db);
 
         // Chèn dữ liệu admin mẫu
         insertAdmin(db);
@@ -37,7 +41,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertCustomer2(db);
         // Chèn dữ liệu giảm giá mẫu
         insertDiscount(db);
+        // Chèn dữ liệu sản phẩm mẫu
+        insertProduct(db);
     }
+
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -89,6 +98,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "End_Date TEXT, " +        // Ngày kết thúc
                 "Quantity INTEGER, " +     // Số lượng
                 "isValid INTEGER)");       // Hạn sử dụng
+    }
+
+    private void createProductTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + productTable + " (" +
+                "ID_Product INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "Product_Name TEXT, " +
+                "Discount_Price REAL, " +
+                "Product_Type TEXT, " +
+                "Product_Brand TEXT)");
+    }
+
+    private void insertProduct(SQLiteDatabase db) {
+        ContentValues product = new ContentValues();
+        product.put("Product_Name", "Váy Thu Đông");
+        product.put("Discount_Price", 100000);
+        product.put("Product_Type", "Váy");
+        product.put("Product_Brand", "Arena");
+        db.insert(productTable, null, product);
+
     }
 
     private void insertAdmin(SQLiteDatabase db) {
@@ -160,4 +188,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         db.insert(discountTable, null, discount);
     }
+
 }

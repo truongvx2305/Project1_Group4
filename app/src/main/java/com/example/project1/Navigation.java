@@ -28,6 +28,7 @@ import com.example.project1.Function.Login;
 import com.example.project1.Function.Management.Customer;
 import com.example.project1.Function.Management.Discount;
 import com.example.project1.Function.Management.Employee;
+import com.example.project1.Function.Management.Product;
 import com.example.project1.Function.Profile;
 import com.example.project1.Function.SecurityLock;
 import com.example.project1.Model.UserModel;
@@ -214,6 +215,10 @@ public class Navigation extends AppCompatActivity {
             fragment = new SecurityLock();
             ((SecurityLock) fragment).setUsername(username);
             title = "Khóa bảo mật";
+        } else if (itemId == R.id.item_product_management) {
+            fragment = new Product();
+            ((Product) fragment).setUsername(username);
+            title = "Quản lý sản phẩm";
         } else if (itemId == R.id.item_logout) {
             logout();
             return true;
