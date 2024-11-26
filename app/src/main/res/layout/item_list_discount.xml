@@ -56,17 +56,6 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/priceDiscount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/font"
-                    android:text="Giá giảm giá"
-                    android:textColor="#000000"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
                     android:id="@+id/minPriceDiscount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

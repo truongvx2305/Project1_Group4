@@ -67,7 +67,7 @@ public class DiscountDao {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow("ID_Discount"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("Name"));
                 float discountPrice = cursor.getFloat(cursor.getColumnIndexOrThrow("Discount_Price"));
-                double minOrderPrice = cursor.getDouble(cursor.getColumnIndexOrThrow("Min_Order_Price"));
+                int minOrderPrice = cursor.getInt(cursor.getColumnIndexOrThrow("Min_Order_Price"));
                 String startDate = cursor.getString(cursor.getColumnIndexOrThrow("Start_Date"));
                 String endDate = cursor.getString(cursor.getColumnIndexOrThrow("End_Date"));
                 int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("Quantity"));

@@ -2,6 +2,7 @@ package com.example.project1.Adapter;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.example.project1.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Date;
 
@@ -66,7 +68,6 @@ public class DiscountAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.imgDiscount = convertView.findViewById(R.id.imgDiscount);
             holder.nameDiscount = convertView.findViewById(R.id.nameDiscount);
-            holder.priceDiscount = convertView.findViewById(R.id.priceDiscount);
             holder.minPriceDiscount = convertView.findViewById(R.id.minPriceDiscount);
             holder.quantityDiscount = convertView.findViewById(R.id.quantityDiscount);
             holder.endDateDiscount = convertView.findViewById(R.id.endDateDiscount);
@@ -81,7 +82,6 @@ public class DiscountAdapter extends BaseAdapter {
         // Gán dữ liệu từ DiscountModel vào View
         DiscountModel discount = discountList.get(position);
         holder.nameDiscount.setText(discount.getName());
-        holder.priceDiscount.setText("Giảm giá: " + discount.getDiscountPrice() * 100 + "%");
         holder.minPriceDiscount.setText("Giá tối thiểu: " + discount.getMinOrderPrice() + " VND");
         holder.quantityDiscount.setText("Số lượng: " + discount.getQuantity());
         holder.endDateDiscount.setText("Ngày kết thúc: " + discount.getEndDate());
@@ -115,6 +115,33 @@ public class DiscountAdapter extends BaseAdapter {
         endDateField.setText(discount.getEndDate());
         quantityField.setText(String.valueOf(discount.getQuantity()));
 
+        // Thêm DatePickerDialog cho endDateField
+        endDateField.setOnClickListener(v -> {
+            String[] dateParts = endDateField.getText().toString().split("-");
+            int year, month, day;
+
+            // Nếu có giá trị hiện tại thì dùng làm ngày mặc định, nếu không dùng ngày hiện tại
+            if (dateParts.length == 3) {
+                year = Integer.parseInt(dateParts[0]);
+                month = Integer.parseInt(dateParts[1]) - 1; // Tháng bắt đầu từ 0
+                day = Integer.parseInt(dateParts[2]);
+            } else {
+                // Lấy ngày hiện tại
+                Calendar calendar = Calendar.getInstance();
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+            }
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, selectedYear, selectedMonth, selectedDay) -> {
+                // Cập nhật ngày được chọn vào EditText
+                @SuppressLint("DefaultLocale") String formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
+                endDateField.setText(formattedDate);
+            }, year, month, day);
+
+            datePickerDialog.show();
+        });
+
         builder.setPositiveButton("Cập nhật", null);
         builder.setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss());
 
@@ -127,7 +154,7 @@ public class DiscountAdapter extends BaseAdapter {
                 String newQuantity = quantityField.getText().toString().trim();
 
                 if (validateInput(minPriceField, endDateField, quantityField, newMinPrice, newEndDate, newQuantity)) {
-                    discount.setMinOrderPrice(Double.parseDouble(newMinPrice));
+                    discount.setMinOrderPrice(Integer.parseInt(newMinPrice));
                     discount.setEndDate(newEndDate);
                     discount.setQuantity(Integer.parseInt(newQuantity));
 
@@ -190,7 +217,6 @@ public class DiscountAdapter extends BaseAdapter {
 
         return true;
     }
-
 
     private static class ViewHolder {
         ImageView imgDiscount;
